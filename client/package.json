@@ -1,0 +1,22 @@
+{
+  "name": "poll-cat",
+  "version": "1.0.0",
+  "description": "Interactive Poll application for TWEB course @ HEIG-VD",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pikkle/poll-cat.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pikkle/poll-cat/issues"
+  },
+  "homepage": "https://github.com/pikkle/poll-cat#readme",
+  "dependencies": {
+    "webpack": "^1.13.3"
+  }
+}
