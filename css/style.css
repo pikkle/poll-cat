@@ -217,7 +217,8 @@ label {
 }
 
 .logo img {
-    height: 23px;
+    margin-top: -20px;
+    height: 60px;
 }
 
 /* 5. SLIDER */
