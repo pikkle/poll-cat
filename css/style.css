@@ -229,17 +229,22 @@ label {
 
 #moto {
     background-size: 100%;
-    background-image: url(../images/moto.jpg);
+    background-image: url(../images/moto2.jpg);
     background-repeat: no-repeat;
-
+    position: relative;
     height: 600px;
 }
 
-#text-sticker h1 {
+#text-sticker h1, #text-sticker h4 {
     color: whitesmoke;
-    background-color: #252525;
-    letter-spacing: -1px;
+    text-align: center;
+}
 
+.copyright-photo {
+    color: dimgrey;
+    position: absolute;
+    bottom: 0;
+    right: 5px;
 }
 
 /* 6. SERVICES */
