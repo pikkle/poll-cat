@@ -235,6 +235,10 @@ label {
     height: 600px;
 }
 
+#text-sticker {
+    padding-top: 100px;
+}
+
 #text-sticker h1, #text-sticker h4 {
     color: whitesmoke;
     text-align: center;
