@@ -28,33 +28,37 @@ We will use the following technologies:
 There is nothing to be run at the moment. 
 
 ## Mockups
-The application mockups can also be viewed on the [landing page](https://pikkle.github.io/poll-cat/).<br>
+The application mockups can also be viewed on the [landing page](https://pikkle.github.io/poll-cat/) without the actions and links descriptions.<br>
 The mockups were made with the web application [Moqups](https://moqups.com/).
+
+#### Index page
+a simple index page that leads to either joining or opening a room
+![Simple index page](doc/mockups/mockup1.png)
 
 #### The room creation interface
 a simple interface to create a room. Lets the choice to the room admin to let the other users to post questions or not.
-![a simple interface to create a room. Lets the choice to the room admin to let the other users to post questions or not.](https://raw.githubusercontent.com/pikkle/poll-cat/gh-pages/images/mockups/mockup5.png)
+![a simple interface to create a room. Lets the choice to the room admin to let the other users to post questions or not.](doc/mockups/mockup2.png)
 
 #### The room displaying interface
 that shows simply the room number for your audience to join in.
-![The room displaying interface for easy joining](https://raw.githubusercontent.com/pikkle/poll-cat/gh-pages/images/mockups/mockup6.png)
+![The room displaying interface for easy joining](doc/mockups/mockup3.png)
 
 #### The room joining interface
 that has a simple form to join in a room.
-![The room joining interface to join in easily](https://raw.githubusercontent.com/pikkle/poll-cat/gh-pages/images/mockups/mockup7.png)
+![The room joining interface to join in easily](doc/mockups/mockup4.png)
 
 #### The audience interface
 that shows live questions from other people in white stickers, and pollings from the speaker in yellow stickers.
-![The audience interface, showing live questions from other people in white stickers, and pollings from the speaker in yellow stickers.](https://raw.githubusercontent.com/pikkle/poll-cat/gh-pages/images/mockups/mockup1.png)
+![The audience interface, showing live questions from other people in white stickers, and pollings from the speaker in yellow stickers.](doc/mockups/mockup5.png)
 
 #### The comment interface
 that allow users to comment questions.
-![The comment interface that allow users to comment questions.](https://raw.githubusercontent.com/pikkle/poll-cat/gh-pages/images/mockups/mockup2.png)
+![The comment interface that allow users to comment questions.](doc/mockups/mockup6.png)
 
 #### The speaker interface
 that shows questions from the audience and access to live results to polls.
-![The speaker interface that shows questions from the audience and access to live results to polls.](https://raw.githubusercontent.com/pikkle/poll-cat/gh-pages/images/mockups/mockup3.png)
+![The speaker interface that shows questions from the audience and access to live results to polls.](doc/mockups/mockup7.png)
 
 #### The stats interface
 that shows a bar chart of responses from the audience to a poll.
-![The stats interfacethat shows a bar chart of responses from the audience to a poll.](https://raw.githubusercontent.com/pikkle/poll-cat/gh-pages/images/mockups/mockup4.png)
+![The stats interfacethat shows a bar chart of responses from the audience to a poll.](doc/mockups/mockup8.png)
