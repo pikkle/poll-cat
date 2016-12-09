@@ -7,6 +7,7 @@ They can interract with each other with questions and polls. Only the speaker ca
 The speaker can also have a visualisation for each poll showing statistics of poll participations. The audience can also ask
 questions about the speech and can comment existing questions. They can also evaluate the relevance of a question.
 
+### Landing page
 A full description of the application usage can be found on [https://pikkle.github.io/poll-cat/](https://pikkle.github.io/poll-cat/)
 
 ## Technologies
