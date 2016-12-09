@@ -30,6 +30,18 @@ There is nothing to be run at the moment.
 The application mockups can also be viewed on the [landing page](https://pikkle.github.io/poll-cat/).<br>
 The mockups were made with the web application [Moqups](https://moqups.com/).
 
+#### The room creation interface
+a simple interface to create a room. Lets the choice to the room admin to let the other users to post questions or not.
+![a simple interface to create a room. Lets the choice to the room admin to let the other users to post questions or not.](https://raw.githubusercontent.com/pikkle/poll-cat/gh-pages/images/mockups/mockup5.png)
+
+#### The room displaying interface
+that shows simply the room number for your audience to join in.
+![The room displaying interface for easy joining](https://raw.githubusercontent.com/pikkle/poll-cat/gh-pages/images/mockups/mockup6.png)
+
+#### The room joining interface
+that has a simple form to join in a room.
+![The room joining interface to join in easily](https://raw.githubusercontent.com/pikkle/poll-cat/gh-pages/images/mockups/mockup7.png)
+
 #### The audience interface
 that shows live questions from other people in white stickers, and pollings from the speaker in yellow stickers.
 ![The audience interface, showing live questions from other people in white stickers, and pollings from the speaker in yellow stickers.](https://raw.githubusercontent.com/pikkle/poll-cat/gh-pages/images/mockups/mockup1.png)
