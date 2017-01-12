@@ -1,3 +1,7 @@
-<h1>
-  {{title}}
-</h1>
+<div class="maincontainer">
+    <app-topbar [title]="title"></app-topbar>
+    <router-outlet [(title)]="title"></router-outlet>
+    <div class="footer">
+        <app-footbar></app-footbar>
+    </div>
+</div>

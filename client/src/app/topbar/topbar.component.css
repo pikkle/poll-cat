@@ -1,0 +1,22 @@
+.menu-bar {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    border-bottom: solid 1px #eee;
+}
+
+.menu-right, .menu-left {
+    width: 247px;
+    display: flex;
+    align-items: center;
+}
+
+.menu-right a {
+    margin-left: 15px;
+}
+
+#logo {
+    height: 60px;
+    align-self: center;
+}
