@@ -37,7 +37,8 @@ const appRoutes: Routes = [
 		HttpModule
 	],
 	providers: [
-		PollcatService
+		PollcatService,
+		SocketService
 	],
 	bootstrap: [AppComponent]
 })

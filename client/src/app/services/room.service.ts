@@ -3,5 +3,4 @@ import {Subject} from "rxjs";
 
 @Injectable()
 export class RoomService {
-
 }
