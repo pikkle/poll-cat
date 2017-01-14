@@ -16,6 +16,11 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
+from api import views
+from api.views import Rooms
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^rooms$', views.Rooms.as_view()),
+    url(r'^questions', views.Question.as_view()),
 ]
