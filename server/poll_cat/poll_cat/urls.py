@@ -11,5 +11,8 @@ urlpatterns = [
     url(r'^rooms/auth', views.Auth.as_view()),
     url(r'^rooms/(?P<room_number>[^/]+)/questions$', views.Questions.as_view()),
     url(r'^rooms/(?P<room_number>[^/]+)/polls', views.Polls.as_view()),
+    url(r'^questions/(?P<question_id>[^/]+)/comments', views.Comments.as_view()),
+    url(r'^questions/(?P<question_id>[^/]+)/votes', views.Votes.as_view()),
+
 
 ]

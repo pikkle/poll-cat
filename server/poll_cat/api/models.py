@@ -1,3 +1,4 @@
+from django.contrib.sessions.models import Session
 from django.db import models
 
 # Create your models here.
@@ -18,7 +19,12 @@ class Question (Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
     timestamp = models.DateField(auto_now_add=True)
-    vote = models.IntegerField()
+    balance = models.IntegerField()
+
+
+class Vote (Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    owner = models.ForeignKey(Session)
 
 
 class Comment (Model):
