@@ -16,13 +16,13 @@ We will use the following technologies:
 - [Angular2](https://angular.io/)
 - [Webpack](https://webpack.github.io/)
 - [Npm](https://www.npmjs.com/)
-- [Socket.io](https://www.python.org/)
+- [WebSocket](https://www.python.org/)
 
 ### Server technologeis
 - [Python](https://www.python.org/)
 - [Django](https://www.djangoproject.com/)
 - [MySQL](https://www.mysql.com/)
-- [Socket.io](http://socket.io/)
+- [Channels (ws)](http://socket.io/)
 
 ## Instructions
 There is nothing to be run at the moment. 
