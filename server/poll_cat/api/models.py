@@ -3,6 +3,7 @@ from django.db import models
 
 # Create your models here.
 from django.db.models import Model
+from rest_framework import serializers
 
 
 class Room (Model):
@@ -20,6 +21,9 @@ class Question (Model):
     title = models.CharField(max_length=50)
     timestamp = models.DateField(auto_now_add=True)
     balance = models.IntegerField()
+
+    def comments(self):
+        return self.comment_set.all()
 
 
 class Vote (Model):
@@ -39,7 +43,7 @@ class Poll (Model):
     isExclusive = models.BooleanField()
 
 
-class Answers (Model):
+class Answer (Model):
     poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
     votes = models.IntegerField()
