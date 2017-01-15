@@ -31,6 +31,11 @@ class Auth (APIView):
 
 
 class Questions (APIView):
+    def get(self, request, room_number):
+        questions = Room.objects.get(number=room_number).question_set.all()
+        request.session['current_room'] = room_number
+        return Response({}, status=200)
+
     def post(self, request, room_number):
         json = JSONParser().parse(request)
         room = Room.objects.filter(number=room_number).first()
@@ -67,11 +72,11 @@ class Comments(APIView):
 
 class Votes(APIView):
     def post(self, request, question_id):
-        request.session['a']= "a"
+        request.session['a'] = "a"
         json = JSONParser().parse(request)
         question = Question.objects.filter(pk=question_id).first()
 
-        print(request.session.user)
+        print(request.session)
 
         if question:
             vote_set = Question.objects.get(pk=question_id).vote_set.all()
