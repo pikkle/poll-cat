@@ -11,6 +11,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class QuestionSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(many=True)
+    id = serializers.IntegerField(source='pk')
 
     class Meta:
         model = Question

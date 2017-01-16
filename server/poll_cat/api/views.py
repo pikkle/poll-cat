@@ -7,12 +7,20 @@ from rest_framework.views import APIView
 from uuid import uuid4
 from rest_framework.parsers import JSONParser
 
-from api.models import Room, Question, Comment, Vote, Poll, Answer
+from api.models import Room, Question, Comment, Vote, Poll, Answer, get_or_none
 from api.serializers import QuestionSerializer, RoomSerializer
 
 
 class Rooms (APIView):
-    def post(self, request):
+    def get(self, request, room_number):
+        room = get_or_none(Room, number=room_number)
+        if room:
+            return Response(RoomSerializer(room).data, status=200)
+        else:
+            return Response({'error': 'room doesn\'t exist'}, status=403)
+
+
+    def post(self, request, room_number):
         request.session.save()
         json = JSONParser().parse(request)
         uuid = str(uuid4())[:6]

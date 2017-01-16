@@ -3,7 +3,13 @@ from django.db import models
 
 # Create your models here.
 from django.db.models import Model
-from rest_framework import serializers
+
+
+def get_or_none(classmodel, **kwargs):
+    try:
+        return classmodel.objects.get(**kwargs)
+    except classmodel.DoesNotExist:
+        return None
 
 
 class Room (Model):

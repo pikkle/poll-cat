@@ -35,4 +35,3 @@ Thumbs.db
 
 #Python
 *.pyc
-*.sqlite3
