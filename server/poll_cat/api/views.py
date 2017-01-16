@@ -1,3 +1,5 @@
+from json import dumps
+
 from channels import Group
 from django.contrib.sessions.models import Session
 from rest_framework.response import Response
@@ -6,7 +8,7 @@ from uuid import uuid4
 from rest_framework.parsers import JSONParser
 
 from api.models import Room, Question, Comment, Vote, Poll, Answer
-from api.serializers import QuestionSerializer
+from api.serializers import QuestionSerializer, RoomSerializer
 
 
 class Rooms (APIView):
@@ -19,7 +21,7 @@ class Rooms (APIView):
         room.save()
         request.session['room_admin_uuid'] = uuid
 
-        return Response({'token': token, 'room': uuid}, status=201)
+        return Response(RoomSerializer(room).data, status=201)
 
 
 class Auth (APIView):
@@ -49,10 +51,13 @@ class Questions (APIView):
         if room:
             question = Question(room=room, title=json['title'], balance=0)
             question.save()
-            questionJson = QuestionSerializer(question)
 
-            Group("room-%s" % room_number).send({
-                "text": str(questionJson.data)
+            Group('room-%s' % question.room.number).send({
+                'text': dumps({
+                    'type': 'question',
+                    'action': 'create',
+                    'data': QuestionSerializer(question).data
+                })
             })
 
             return Response({"id": question.pk}, status=201)
@@ -62,17 +67,23 @@ class Questions (APIView):
 
 
 class Comments(APIView):
-    def post(self, request, question_id):
+    def post(self, request, room_number, question_id):
         request.session.save()
         json = JSONParser().parse(request)
         question = Question.objects.filter(pk=question_id).first()
 
-        if question:
+        if question and question.room.number == room_number:
             comment = Comment(question=question, message=json['message'])
             comment.save()
-            Group("room-%s" % question.room.number).send({
-                "text": str(QuestionSerializer(question).data)
+
+            Group('room-%s' % question.room.number).send({
+                'text': dumps({
+                    'type': 'question',
+                    'action': 'update',
+                    'data': QuestionSerializer(question).data
+                })
             })
+
             return Response({}, status=204)
 
         else:
@@ -80,13 +91,13 @@ class Comments(APIView):
 
 
 class Votes(APIView):
-    def post(self, request, question_id):
+    def post(self, request, room_number, question_id):
         request.session.save()
         session = Session.objects.get(session_key=request.session.session_key)
         json = JSONParser().parse(request)
         question = Question.objects.filter(pk=question_id).first()
 
-        if question:
+        if question and question.room.number == room_number:
             vote = Question.objects.get(pk=question_id).vote_set.filter(owner=session).all().first()
 
             if vote:
@@ -94,6 +105,22 @@ class Votes(APIView):
             else:
                 vote = Vote(question=question, owner=session)
                 vote.save()
+
+                value = int('0' + json['value'])
+
+                if value > 1:
+                    question.balance += 1
+                elif value < -1:
+                    question.balance -= 1
+
+                Group('room-%s' % question.room.number).send({
+                    'text': dumps({
+                        'type': 'question',
+                        'action': 'update',
+                        'data': QuestionSerializer(question).data
+                    })
+                })
+
                 return Response({}, status=204)
 
         else:
@@ -115,6 +142,14 @@ class Polls (APIView):
                 for item in json['answers']:
                     answer = Answer(poll=poll, title=item['title'], votes=0)
                     answer.save()
+
+                    Group('room-%s' % question.room.number).send({
+                        'text': dumps({
+                            'type': 'poll',
+                            'action': 'create',
+                            'data': 'data'
+                        })
+                    })
 
                 return Response({}, status=201)
 

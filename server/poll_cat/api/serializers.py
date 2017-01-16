@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from api.models import Question, Comment
+from api.models import Question, Comment, Room
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -15,4 +15,10 @@ class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Question
         fields = ('title', 'timestamp', 'balance', 'comments')
+
+
+class RoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = ('title', 'number', 'token')
 

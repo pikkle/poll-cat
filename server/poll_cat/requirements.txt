@@ -1,0 +1,5 @@
+django
+uwsgi
+djangorestframework
+celery
+channels
