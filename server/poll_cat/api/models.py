@@ -52,6 +52,13 @@ class Poll (Model):
 class Answer (Model):
     poll = models.ForeignKey(Poll, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
-    votes = models.IntegerField()
+    votes = models.BooleanField()
+
+
+class AnswerToPoll (Model):
+    poll = models.ForeignKey(Poll)
+    owner = models.ForeignKey(Session)
+
+
 
 

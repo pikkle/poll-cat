@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from uuid import uuid4
 from rest_framework.parsers import JSONParser
 
-from api.models import Room, Question, Comment, Vote, Poll, Answer, get_or_none
+from api.models import Room, Question, Comment, Vote, Poll, Answer, get_or_none, AnswerToPoll
 from api.serializers import QuestionSerializer, RoomSerializer
 
 
@@ -30,6 +30,39 @@ class Rooms (APIView):
         request.session['room_admin_uuid'] = uuid
 
         return Response(RoomSerializer(room).data, status=201)
+
+
+class AnswersToPoll(APIView):
+    def post(self, request, room_number, poll_id):
+        request.session.save()
+        room = get_or_none(Room, number=room_number)
+        poll = get_or_none(Poll, pk=poll_id)
+        json = JSONParser().parse(request)
+
+        if poll and room and poll.room == room:
+
+            answer_to_poll = get_or_none(AnswerToPoll, owner=request.session, poll=poll)
+
+            if answer_to_poll:
+                return Response({'error': 'you have already answered that poll'}, status=403)
+
+            else:
+                for answer in json['answers']:
+
+                    db_answer = get_or_none(Answer, pk=answer['id'])
+
+                    if db_answer and db_answer.poll == poll:
+                        answer_to_poll = AnswersToPoll(owner=request.session, poll=poll)
+                        answer_to_poll.save()
+
+                        if answer['value']:
+                            db_answer.value += 1
+
+                        db_answer.save()
+
+                return Response({}, status=204)
+        else:
+            return Response({'error': 'no matching poll or room found'}, status=404)
 
 
 class Auth (APIView):
