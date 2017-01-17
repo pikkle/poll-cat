@@ -70,5 +70,10 @@ class AnswerToPoll (Model):
     owner = models.ForeignKey(Session)
 
 
+class AnswerToAnswer (Model):
+    answer = models.ForeignKey(Answer)
+    owner = models.ForeignKey(Session)
+
+
 
 

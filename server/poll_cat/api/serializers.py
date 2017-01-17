@@ -34,7 +34,7 @@ class AnswerWithVoteSerializer(serializers.ModelSerializer):
 
 class PollSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(source='pk')
-    answers = AnswerSerializer(many=True)
+    answers = AnswerWithVoteSerializer(many=True)
 
     class Meta:
         model = Poll

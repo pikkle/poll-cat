@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 from uuid import uuid4
 from rest_framework.parsers import JSONParser
 
-from api.models import Room, Question, Comment, Vote, Poll, Answer, get_or_none, AnswerToPoll
+from api.models import Room, Question, Comment, Vote, Poll, Answer, get_or_none, AnswerToPoll, AnswerToAnswer
 from api.serializers import QuestionSerializer, RoomSerializer, PollSerializer, RoomWithTokenSerializer, \
     AnswerSerializer, AnswerWithVoteSerializer
 
@@ -54,15 +54,25 @@ class AnswersToPoll(APIView):
 
                 for answer in json:
                     db_answer = get_or_none(Answer, pk=answer['id'])
+                    answer_to_answer = AnswerToAnswer.objects.filter(owner=session, answer=db_answer)
 
-                    if db_answer and db_answer.poll == poll:
-                        answer_to_poll = AnswerToPoll(owner=session, poll=poll)
-                        answer_to_poll.save()
+                    if (not answer_to_answer) and db_answer and db_answer.poll == poll:
+                        AnswerToAnswer(owner=session, answer=db_answer).save()
 
                         if answer['vote']:
                             db_answer.votes += 1
+                            db_answer.save()
 
-                        db_answer.save()
+                Group('room-%s' % poll.room.number).send({
+                    'text': dumps({
+                        'type': 'question',
+                        'action': 'create',
+                        'data': PollSerializer(poll).data
+                    })
+                })
+
+                answer_to_poll = AnswerToPoll(owner=session, poll=poll)
+                answer_to_poll.save()
 
                 return Response({}, status=204)
         else:
