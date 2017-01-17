@@ -33,7 +33,7 @@
 
 .card .card-container {
     width: 325px;
-    border: 1px solid black;
+    border: 1px solid #ddd;
     padding: 10px;
     margin-bottom: 30px;
 }
@@ -41,7 +41,8 @@
 .card-poll {
 }
 
-.card-question {}
+.card-question {
+}
 
 .card-question, .card-poll-container {
     height: 100%;

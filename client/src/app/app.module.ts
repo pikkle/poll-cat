@@ -15,13 +15,15 @@ import { OpenComponent } from './open/open.component';
 import {SocketService} from "./services/socket.service";
 import { RoomComponent } from './room/room.component';
 import {ApiService} from "./services/api.service";
+import { CommentsComponent } from './comments/comments.component';
 
 const appRoutes: Routes = [
 	{path: '', component: MenuComponent},
 	{path: 'open', component: OpenComponent},
 	{path: 'join', component: JoinComponent},
 	{path: 'room/:roomNumber', component: RoomComponent},
-	{path: 'room/:roomNumber/link', component: RoomlinkComponent}
+	{path: 'room/:roomNumber/link', component: RoomlinkComponent},
+	{path: 'room/:roomNumber/:questionId', component: CommentsComponent}
 ];
 
 @NgModule({
@@ -33,7 +35,8 @@ const appRoutes: Routes = [
 		MenuComponent,
 		JoinComponent,
 		OpenComponent,
-		RoomComponent
+		RoomComponent,
+		CommentsComponent
 	],
 	imports: [
 		RouterModule.forRoot(appRoutes),

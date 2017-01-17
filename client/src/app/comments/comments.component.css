@@ -1,0 +1,40 @@
+
+.linkback {
+    cursor: pointer;
+    margin-top: 30px;
+    margin-left: 100px;
+}
+
+.main-container {
+    width: 800px;
+    margin: auto;
+}
+
+.comments-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.comment-input {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.comment-input input {
+    width: 500px;
+}
+
+.comment-box {
+    width: 100%;
+    margin-top: 10px;
+    min-height: 40px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.comment-time {
+    color: #aaa;
+}

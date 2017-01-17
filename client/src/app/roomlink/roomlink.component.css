@@ -7,3 +7,7 @@
 .bigtitle {
     font-size: 150px;
 }
+
+.linkback {
+    cursor: pointer;
+}

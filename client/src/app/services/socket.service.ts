@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import {environment} from "../../environments/environment";
 import {BehaviorSubject, Observable, Subject, ReplaySubject} from "rxjs";
 import {Room} from "../models/room";
+import {Question} from "../models/question";
 
 @Injectable()
 export class SocketService {
@@ -10,6 +11,12 @@ export class SocketService {
 
 	private _roomJoin: ReplaySubject<void> = new ReplaySubject<void>();
 	public roomJoin: Observable<void> = this._roomJoin.asObservable();
+
+	private _questionReceive: Subject<Question> = new Subject<Question>();
+	public questionReceive: Observable<Question> = this._questionReceive.asObservable();
+
+	private _questionUpdate: Subject<Question> = new Subject<Question>();
+	public questionUpdate: Observable<Question> = this._questionUpdate.asObservable();
 
 	private _socketError: Subject<any> = new Subject();
 	public socketError: Observable<any> = this._socketError.asObservable();
@@ -21,14 +28,27 @@ export class SocketService {
 	}
 
 	joinRoom(roomId: string) {
-		this.socket = new WebSocket('ws://' + environment.apiAddress + '/join/' + roomId);
+		this.socket = new WebSocket('ws://' + environment.webSocketAddress + '/join/' + roomId);
 		this._roomJoin.next(null);
 		this.socket.onerror = err => {
-			console.log(err);
+			console.error('WEBSOCKET ERROR');
+			console.error(err);
 			this._socketError.next(err);
 		};
 		this.socket.onmessage = m => {
+			console.log('WEBSOCKET MESSAGE');
 			console.log(m);
+			var obj = JSON.parse(m.data);
+			console.log(obj);
+			var data = obj.data;
+			if (obj.type === "question") {
+				if (obj.action === "create") {
+					this._questionReceive.next(new Question(data.id, data.title, new Date(data.timestamp), data.balance, data.comments));
+				} else if (obj.action === "update") {
+					this._questionUpdate.next(new Question(data.id, data.title, new Date(data.timestamp), data.balance, data.comments));
+				}
+			}
+
 		}
 
 	}

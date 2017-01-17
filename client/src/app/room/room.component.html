@@ -16,102 +16,12 @@
                             <div class="bottom-question">
                                 <div class="vote">
                                     <i class="fa fa-thumbs-down" (click)="downvote(asQuestion(card))"></i>
-                                    <span class="vote-count">{{asQuestion(card).vote}}</span>
+                                    <span class="vote-count">{{asQuestion(card).balance}}</span>
                                     <i class="fa fa-thumbs-up" (click)="upvote(asQuestion(card))"></i>
                                 </div>
-                                <div class="comment">
+                                <div class="comment" (click)="goToComments(asQuestion(card))">
                                     <span class="comments-count">{{asQuestion(card).comments.length}}</span>
-                                    <i class="fa fa-comment" (click)="goToComments(asQuestion(card))"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div *ngIf="isPoll(card)" class="card-poll-container">
-                            <h4>{{asPoll(card).title}}</h4>
-                            <div class="poll-answers-radio" *ngIf="asPoll(card).isExclusive">
-                                <div *ngFor="let answer of asPoll(card).answers; let i = index">
-                                    <label>
-                                        <input type="radio" name="{{asPoll(card).id}}" value="{{i}}">
-                                        {{answer.title}}
-                                    </label>
-                                </div>
-                                <div class="send-poll">
-                                    <button class="btn btn-default">Submit</button>
-                                </div>
-                            </div>
-                            <div class="poll-answers-checkbox" *ngIf="!asPoll(card).isExclusive">
-                                <div *ngFor="let answer of asPoll(card).answers; let i = index">
-                                    <label>
-                                        <input type="checkbox" name="">
-                                        {{answer.title}}
-                                    </label>
-                                </div>
-                                <div class="send-poll">
-                                    <button class="btn btn-default">Submit</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="dashboard-column" id="column-2">
-                <div class="card" *ngFor="let card of cards; let j = index">
-                    <div class="card-container" *ngIf="j%3 === 1" [class.card-poll]="isPoll(card)">
-                        <div *ngIf="isQuestion(card)" class="card-question">
-                            <h4>{{asQuestion(card).title}}</h4>
-                            <div class="bottom-question">
-                                <div class="vote">
-                                    <i class="fa fa-thumbs-down" (click)="downvote(asQuestion(card))"></i>
-                                    <span class="vote-count">{{asQuestion(card).vote}}</span>
-                                    <i class="fa fa-thumbs-up" (click)="upvote(asQuestion(card))"></i>
-                                </div>
-                                <div class="comment">
-                                    <span class="comments-count">{{asQuestion(card).comments.length}}</span>
-                                    <i class="fa fa-comment" (click)="goToComments(asQuestion(card))"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div *ngIf="isPoll(card)" class="card-poll-container">
-                            <h4>{{asPoll(card).title}}</h4>
-                            <div class="poll-answers-radio" *ngIf="asPoll(card).isExclusive">
-                                <div *ngFor="let answer of asPoll(card).answers; let i = index">
-                                    <label>
-                                        <input type="radio" name="{{asPoll(card).id}}" value="{{i}}">
-                                        {{answer.title}}
-                                    </label>
-                                </div>
-                                <div class="send-poll">
-                                    <button class="btn btn-default">Submit</button>
-                                </div>
-                            </div>
-                            <div class="poll-answers-checkbox" *ngIf="!asPoll(card).isExclusive">
-                                <div *ngFor="let answer of asPoll(card).answers; let i = index">
-                                    <label>
-                                        <input type="checkbox" name="">
-                                        {{answer.title}}
-                                    </label>
-                                </div>
-                                <div class="send-poll">
-                                    <button class="btn btn-default">Submit</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="dashboard-column" id="column-3">
-                <div class="card" *ngFor="let card of cards; let j = index">
-                    <div class="card-container" *ngIf="j%3 === 2" [class.card-poll]="isPoll(card)">
-                        <div *ngIf="isQuestion(card)" class="card-question">
-                            <h4>{{asQuestion(card).title}}</h4>
-                            <div class="bottom-question">
-                                <div class="vote">
-                                    <i class="fa fa-thumbs-down" (click)="downvote(asQuestion(card))"></i>
-                                    <span class="vote-count">{{asQuestion(card).vote}}</span>
-                                    <i class="fa fa-thumbs-up" (click)="upvote(asQuestion(card))"></i>
-                                </div>
-                                <div class="comment">
-                                    <span class="comments-count">{{asQuestion(card).comments.length}}</span>
-                                    <i class="fa fa-comment" (click)="goToComments(asQuestion(card))"></i>
+                                    <i class="fa fa-comment"></i>
                                 </div>
                             </div>
                         </div>

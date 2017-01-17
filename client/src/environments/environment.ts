@@ -5,5 +5,6 @@
 
 export const environment = {
 	production: false,
-	apiAddress: "localhost:4200/api"
+	apiAddress: "localhost:4200/api",
+	webSocketAddress: "localhost:8000"
 };

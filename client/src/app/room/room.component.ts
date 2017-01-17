@@ -22,6 +22,8 @@ export class RoomComponent implements OnInit, OnDestroy {
 
 	private hasVoted: boolean = false;
 
+	private isAdmin: boolean = false;
+
 	private cards: any[] = []; // Questions or Polls
 
 	constructor(private router: Router,
@@ -37,13 +39,35 @@ export class RoomComponent implements OnInit, OnDestroy {
 			var roomNumber = params['roomNumber'];
 			this.pollcatService.updateTitle("");
 
+			this.apiService.questionsReceive.subscribe(qs => {
+				this.cards = qs;
+			});
+
+			this.socketService.questionReceive.subscribe(q => {
+				this.cards.push(q);
+			});
+
+			this.socketService.questionUpdate.subscribe(q => {
+				for (let c of this.cards) {
+					if (c instanceof Question && this.asQuestion(c).id === q.id) {
+						console.log(q);
+						c.balance = q.balance;
+						c.comments = q.comments;
+					}
+				}
+			});
+
+			this.apiService.roomAuth.subscribe(isAdmin => {
+				this.isAdmin = isAdmin;
+			});
+
 			this.apiService.roomFetch.subscribe(room => {
 				this.room = room;
 				this.pollcatService.updateTitle(room.title);
+				this.apiService.authRoom(room.id);
 			});
 
 			this.socketService.roomJoin.subscribe(join => {
-				console.log("Socket opened");
 				this.apiService.fetchRoom(roomNumber);
 			}, error => {
 				this.roomError = true;
@@ -82,33 +106,21 @@ export class RoomComponent implements OnInit, OnDestroy {
 	}
 
 	downvote(q: Question): void {
-		if (!this.hasVoted) {
-			q.vote--;
-			this.hasVoted = true;
-		}
+		this.apiService.vote(this.room.id, q.id, -1);
 	}
 
 	upvote(q: Question): void {
-		if (!this.hasVoted) {
-			q.vote++;
-			this.hasVoted = true;
-		}
+		this.apiService.vote(this.room.id, q.id, 1);
 	}
 
 	goToComments(q: Question): void {
-
+		this.router.navigateByUrl('/room/'+ this.room.id + '/' + q.id);
 	}
 
 	sendQuestion(): void {
-		console.log("1");
 		if (this.questionForm) {
-			console.log("2");
-			this.apiService.questionReceive.subscribe(q => {
-				console.log("3");
-				console.log(q);
-			});
-			console.log("4");
 			this.apiService.sendQuestion(this.room.id, this.questionForm);
+			this.questionForm = '';
 		}
 	}
 

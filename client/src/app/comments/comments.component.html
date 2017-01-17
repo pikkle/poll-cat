@@ -1,0 +1,18 @@
+<div class="linkback" (click)="goBack()">
+    <i class="fa fa-arrow-left"></i>
+    Back to room
+</div>
+<div class="main-container">
+    <div class="comments-container">
+        <div class="comment-input form-inline">
+            <input class="form-control" type="text" placeholder="Enter your comment here" [(ngModel)]="formComment">
+            <button class="btn btn-primary" (click)="sendComment()">Send</button>
+        </div>
+        <div class="comments-effective-container">
+            <div class="comment-box" *ngFor="let comment of commentsReversed()">
+                <span class="comment-message">{{comment.message}}</span>
+                <span class="comment-time">{{comment.timestamp | date: 'HH:mm:ss'}}</span>
+            </div>
+        </div>
+    </div>
+</div>

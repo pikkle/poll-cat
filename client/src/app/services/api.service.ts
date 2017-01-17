@@ -4,15 +4,15 @@ import {environment} from "../../environments/environment";
 import {Observable, Subject} from "rxjs";
 import {Room} from "../models/room";
 import {Question} from "../models/question";
+import {Comment} from "../models/comment";
 
 @Injectable()
 export class ApiService {
 	private apiUrl = 'http://' + environment.apiAddress;
 	private jsonHeader = new Headers({'Content-Type': 'application/json'});
-	private token: string;
 
-	private _questionReceive: Subject<Question> = new Subject<Question>();
-	public questionReceive: Observable<Question> = this._questionReceive.asObservable();
+	private _questionsReceive: Subject<Question[]> = new Subject<Question[]>();
+	public questionsReceive: Observable<Question[]> = this._questionsReceive.asObservable();
 
 	private _roomCreation: Subject<Room> = new Subject<Room>();
 	public roomCreation: Observable<Room> = this._roomCreation.asObservable();
@@ -60,7 +60,19 @@ export class ApiService {
 		this.http.get(path, options)
 			.subscribe(data => {
 				var d = this.extractData(data);
-				this._roomFetch.next(new Room(d.number, d.title));
+				var questions: Question[] = [];
+				console.log(d.questions);
+				for (let q of d.questions) {
+					var comments: Comment[] = [];
+					for (let c of q.comments) {
+						comments.push(new Comment(c.message, new Date(c.timestamp)));
+					}
+
+					questions.push(new Question(q.id, q.title, new Date(q.timestamp), q.balance, comments));
+				}
+				this._roomFetch.next(new Room(d.number, d.title, questions, []));
+
+				this._questionsReceive.next(questions);
 			});
 	}
 
@@ -71,9 +83,7 @@ export class ApiService {
 		this.http.post(path, JSON.stringify(data), options)
 			.subscribe(data => {
 				var d = this.extractData(data);
-				console.log(data);
-				this.token = d.token;
-				this._roomCreation.next(new Room(d.number, d.title));
+				this._roomCreation.next(new Room(d.number, d.title, [], []));
 			});
 	}
 
@@ -84,8 +94,26 @@ export class ApiService {
 		this.http.post(path, JSON.stringify(data), options)
 			.subscribe(data => {
 				var d = this.extractData(data);
-				console.log(d);
 			});
 	}
 
+	vote(roomId: string, questionId: number, value: number) {
+		const path = this.apiUrl + '/rooms/' + roomId + '/questions/' + questionId + '/votes';
+		const data = {'value': value};
+		const options = new RequestOptions({headers: this.jsonHeader});
+		this.http.post(path, JSON.stringify(data), options)
+			.subscribe(data => {
+				var d = this.extractData(data);
+			});
+	}
+
+	sendComment(roomId: string, questionId: number, comment: string) {
+		const path = this.apiUrl + '/rooms/' + roomId + '/questions/' + questionId + '/comments';
+		const data = {'message': comment};
+		const options = new RequestOptions({headers: this.jsonHeader});
+		this.http.post(path, JSON.stringify(data), options)
+			.subscribe(data => {
+				var d = this.extractData(data);
+			});
+	}
 }
