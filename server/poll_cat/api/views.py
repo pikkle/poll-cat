@@ -80,7 +80,7 @@ class Auth (APIView):
 class AuthForRoom (APIView):
     def get(self, request, room_number):
         request.session.save()
-        room = Room.objects.filter(request.session['roo_admin_uuid']).first()
+        room = get_or_none(Room, number=request.session['room_admin_uuid'])
         if room and room.number == room_number:
             return Response({'admin': True}, status=200)
         else:
