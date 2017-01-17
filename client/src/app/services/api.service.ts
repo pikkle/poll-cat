@@ -74,7 +74,7 @@ export class ApiService {
 				for (let q of d.polls) {
 					var answers = [];
 					for (let a of q.answers) {
-						answers.push({id: a.id, title: a.title, votes: 0});
+						answers.push({id: a.id, title: a.title, votes: a.votes});
 					}
 					polls.push(new Poll(q.id, q.title, new Date(q.timestamp), q.isExclusive, answers));
 				}
@@ -129,9 +129,10 @@ export class ApiService {
 	sendAnswer(roomId: string, pollId: number, answers: any[]) {
 		const path = this.apiUrl + '/rooms/' + roomId + '/polls/' + pollId + '/answers';
 		const data = answers;
-		console.log(JSON.stringify(data));
 		const options = new RequestOptions({headers: this.jsonHeader});
 		this.http.post(path, JSON.stringify(data), options)
-			.subscribe(data => {});
+			.subscribe(data => {
+				console.log(data);
+			});
 	}
 }

@@ -22,6 +22,9 @@ export class SocketService {
 	private _pollReceive: Subject<Poll> = new Subject<Poll>();
 	public pollReceive: Observable<Poll> = this._pollReceive.asObservable();
 
+	private _pollUpdate: Subject<Poll> = new Subject<Poll>();
+	public pollUpdate: Observable<Poll> = this._pollReceive.asObservable();
+
 	private _socketError: Subject<any> = new Subject();
 	public socketError: Observable<any> = this._socketError.asObservable();
 
@@ -54,11 +57,16 @@ export class SocketService {
 				if (obj.action === "create") {
 					var answers = [];
 					for (let a of data.answers) {
-						answers.push({id: a.id, title: a.title, votes: 0});
+						answers.push({id: a.id, title: a.title, votes: a.votes});
 					}
 					this._pollReceive.next(new Poll(data.id, data.title, new Date(data.timestamp), data.isExclusive, answers))
 				} else if (obj.action === "update") {
-					// this._pollUpdate.next(new Poll())
+					console.log('received an update');
+					var answers = [];
+					for (let a of data.answers) {
+						answers.push({id: a.id, title: a.title, votes: a.votes});
+					}
+					this._pollUpdate.next(new Poll(data.id, data.title, new Date(data.timestamp), data.isExclusive, answers))
 				}
 			}
 

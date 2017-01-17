@@ -1,3 +1,15 @@
-<p>
-  stats works!
-</p>
+<div class="linkback" (click)="goBack()">
+    <i class="fa fa-arrow-left"></i>
+    Back to room
+</div>
+<div class="main-container">
+    <div class="stats-container">
+        <h2>{{pollTitle}}</h2>
+        <canvas baseChart
+                [datasets]="barChartData"
+                [labels]="barChartLabels"
+                [options]="barChartOptions"
+                [legend]="barChartLegend"
+                [chartType]="barChartType"></canvas>
+    </div>
+</div>
