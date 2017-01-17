@@ -65,8 +65,8 @@ class AnswersToPoll(APIView):
 
                 Group('room-%s' % poll.room.number).send({
                     'text': dumps({
-                        'type': 'question',
-                        'action': 'create',
+                        'type': 'poll',
+                        'action': 'update',
                         'data': PollSerializer(poll).data
                     })
                 })
