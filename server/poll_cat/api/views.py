@@ -163,9 +163,9 @@ class Votes(APIView):
             else:
                 value = json['value']
 
-                if value > 1:
+                if value > 0:
                     question.balance += 1
-                elif value < -1:
+                elif value < 0:
                     question.balance -= 1
 
                 question.save()
