@@ -19,11 +19,17 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 
 class AnswerSerializer(serializers.ModelSerializer):
-    id = serializers.IntegerField(source='pk')
 
     class Meta:
         model = Answer
         fields = ('id', 'title')
+
+
+class AnswerWithVoteSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Answer
+        fields = ('id', 'title', 'votes')
 
 
 class PollSerializer(serializers.ModelSerializer):
@@ -44,8 +50,7 @@ class RoomSerializer(serializers.ModelSerializer):
         fields = ('title', 'number', 'questions', 'polls')
 
 
-class RoomSerializerWithToken(RoomSerializer):
+class RoomWithTokenSerializer(RoomSerializer):
     class Meta:
         model = Room
         fields = ('title', 'number', 'token', 'questions', 'polls')
-

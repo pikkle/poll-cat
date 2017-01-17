@@ -16,5 +16,6 @@ urlpatterns = [
 
     url(r'^rooms/(?P<room_number>[^/]+)/polls$', views.Polls.as_view()),
     url(r'^rooms/(?P<room_number>[^/]+)/polls/(?P<poll_id>[^/]+)/answers$', views.AnswersToPoll.as_view()),
+    url(r'^rooms/(?P<room_number>[^/]+)/polls/(?P<poll_id>[^/]+)/stats', views.StatsOnPoll.as_view()),
 
 ]

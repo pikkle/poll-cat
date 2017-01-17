@@ -8,7 +8,8 @@ from uuid import uuid4
 from rest_framework.parsers import JSONParser
 
 from api.models import Room, Question, Comment, Vote, Poll, Answer, get_or_none, AnswerToPoll
-from api.serializers import QuestionSerializer, RoomSerializer, PollSerializer, RoomSerializerWithToken
+from api.serializers import QuestionSerializer, RoomSerializer, PollSerializer, RoomWithTokenSerializer, \
+    AnswerSerializer, AnswerWithVoteSerializer
 
 
 class Rooms (APIView):
@@ -29,34 +30,37 @@ class Rooms (APIView):
         room.save()
         request.session['room_admin_uuid'] = uuid
 
-        return Response(RoomSerializerWithToken(room).data, status=201)
+        return Response(RoomWithTokenSerializer(room).data, status=201)
 
 
 class AnswersToPoll(APIView):
     def post(self, request, room_number, poll_id):
         request.session.save()
+        session = Session.objects.get(session_key=request.session.session_key)
         room = get_or_none(Room, number=room_number)
         poll = get_or_none(Poll, pk=poll_id)
         json = JSONParser().parse(request)
 
         if poll and room and poll.room == room:
 
-            answer_to_poll = get_or_none(AnswerToPoll, owner=request.session, poll=poll)
+            answer_to_poll = get_or_none(AnswerToPoll, owner=session, poll=poll)
 
             if answer_to_poll:
                 return Response({'error': 'you have already answered that poll'}, status=403)
 
             else:
-                for answer in json['answers']:
+                if poll.isExclusive and len(json) > 1:
+                    return Response({'error': 'only one response for this poll'}, status=403)
 
+                for answer in json:
                     db_answer = get_or_none(Answer, pk=answer['id'])
 
                     if db_answer and db_answer.poll == poll:
-                        answer_to_poll = AnswersToPoll(owner=request.session, poll=poll)
+                        answer_to_poll = AnswerToPoll(owner=session, poll=poll)
                         answer_to_poll.save()
 
-                        if answer['value']:
-                            db_answer.value += 1
+                        if answer['vote']:
+                            db_answer.votes += 1
 
                         db_answer.save()
 
@@ -216,3 +220,18 @@ class Polls (APIView):
 
             else:
                 return Response({"error": "no room " + room.number + " found"}, status=404)
+
+
+class StatsOnPoll(APIView):
+    def get(self,request, room_number, poll_id):
+        room = get_or_none(Room, number=room_number)
+        poll = get_or_none(Poll, pk=poll_id)
+
+        if room and poll and poll.room == room:
+            answers = Answer.objects.filter(poll=poll).all()
+
+            return Response(AnswerWithVoteSerializer(answers, many=True).data, status=200)
+
+        else:
+            return Response({'error': 'no room or poll found'}, status=403)
+
