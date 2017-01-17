@@ -3,3 +3,4 @@ uwsgi
 djangorestframework
 celery
 channels
+django-cors-headers
