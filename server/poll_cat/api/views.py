@@ -43,7 +43,7 @@ class AnswersToPoll(APIView):
 
         if poll and room and poll.room == room:
 
-            answer_to_poll = get_or_none(AnswerToPoll, owner=session, poll=poll)
+            answer_to_poll = AnswerToPoll.objects.filter(owner=session, poll=poll).all()
 
             if answer_to_poll:
                 return Response({'error': 'you have already answered that poll'}, status=403)
