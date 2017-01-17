@@ -46,7 +46,7 @@ class Vote (Model):
 class Comment (Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     message = models.TextField()
-    timestamp = models.DateField(auto_now_add=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
 
 
 class Poll (Model):
