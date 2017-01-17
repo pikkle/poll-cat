@@ -3,6 +3,7 @@ import {environment} from "../../environments/environment";
 import {BehaviorSubject, Observable, Subject, ReplaySubject} from "rxjs";
 import {Room} from "../models/room";
 import {Question} from "../models/question";
+import {Poll} from "../models/poll";
 
 @Injectable()
 export class SocketService {
@@ -17,6 +18,9 @@ export class SocketService {
 
 	private _questionUpdate: Subject<Question> = new Subject<Question>();
 	public questionUpdate: Observable<Question> = this._questionUpdate.asObservable();
+
+	private _pollReceive: Subject<Poll> = new Subject<Poll>();
+	public pollReceive: Observable<Poll> = this._pollReceive.asObservable();
 
 	private _socketError: Subject<any> = new Subject();
 	public socketError: Observable<any> = this._socketError.asObservable();
@@ -37,7 +41,6 @@ export class SocketService {
 		};
 		this.socket.onmessage = m => {
 			console.log('WEBSOCKET MESSAGE');
-			console.log(m);
 			var obj = JSON.parse(m.data);
 			console.log(obj);
 			var data = obj.data;
@@ -46,6 +49,16 @@ export class SocketService {
 					this._questionReceive.next(new Question(data.id, data.title, new Date(data.timestamp), data.balance, data.comments));
 				} else if (obj.action === "update") {
 					this._questionUpdate.next(new Question(data.id, data.title, new Date(data.timestamp), data.balance, data.comments));
+				}
+			} else if (obj.type === "poll") {
+				if (obj.action === "create") {
+					var answers = [];
+					for (let a of data.answers) {
+						answers.push({id: a.id, title: a.title, votes: 0});
+					}
+					this._pollReceive.next(new Poll(data.id, data.title, new Date(data.timestamp), data.isExclusive, answers))
+				} else if (obj.action === "update") {
+					// this._pollUpdate.next(new Poll())
 				}
 			}
 

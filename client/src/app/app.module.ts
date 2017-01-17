@@ -16,6 +16,8 @@ import {SocketService} from "./services/socket.service";
 import { RoomComponent } from './room/room.component';
 import {ApiService} from "./services/api.service";
 import { CommentsComponent } from './comments/comments.component';
+import {ChartsModule} from "ng2-charts";
+import { StatsComponent } from './stats/stats.component';
 
 const appRoutes: Routes = [
 	{path: '', component: MenuComponent},
@@ -23,7 +25,8 @@ const appRoutes: Routes = [
 	{path: 'join', component: JoinComponent},
 	{path: 'room/:roomNumber', component: RoomComponent},
 	{path: 'room/:roomNumber/link', component: RoomlinkComponent},
-	{path: 'room/:roomNumber/:questionId', component: CommentsComponent}
+	{path: 'room/:roomNumber/comments/:questionId', component: CommentsComponent},
+	{path: 'room/:roomNumber/stats/:pollId', component: StatsComponent}
 ];
 
 @NgModule({
@@ -36,13 +39,15 @@ const appRoutes: Routes = [
 		JoinComponent,
 		OpenComponent,
 		RoomComponent,
-		CommentsComponent
+		CommentsComponent,
+		StatsComponent
 	],
 	imports: [
 		RouterModule.forRoot(appRoutes),
 		BrowserModule,
 		FormsModule,
-		HttpModule
+		HttpModule,
+		ChartsModule
 	],
 	providers: [
 		PollcatService,

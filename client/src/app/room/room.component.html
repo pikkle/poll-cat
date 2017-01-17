@@ -1,7 +1,38 @@
 <div class="room-container">
     <div *ngIf="roomError" class="alert alert-danger" role="alert">Oops ! The room you selected does not exist !</div>
     <div *ngIf="!roomError" class="room-effective-container">
-        <div class="form-inline ask-question">
+        <div class="admin-panel" *ngIf="isAdmin">
+            <div class="roomlink-link" (click)="openRoomLink()">
+                <i class="fa fa-expand"></i>
+                Display Room Link
+            </div>
+            <div class="admin-form">
+                <div class="ask-poll">
+                    <div class="form-group">
+                        <input class="form-control poll-name" type="text" placeholder="Enter your question" [(ngModel)]="pollQuestionForm"/>
+                        <div *ngFor="let answer of pollAnswerForm; let i = index">
+                            <input class="form-control" placeholder="Answer #{{i+1}}" [(ngModel)]="pollAnswerForm[i].value"/>
+                        </div>
+                        <button class="btn btn-default" (click)="addAnswer()">Add an answer</button>
+                    </div>
+                </div>
+                <button class="btn btn-primary" (click)="sendPoll()">Submit</button>
+            </div>
+            <div class="admin-form-type">
+                Answers are:
+                <div class="form-group">
+                    <label>
+                        <input type="radio" name="isExclusive" value="true" [(ngModel)]="isExclusiveForm">
+                        Exclusive (only 1 answer possible)
+                    </label>
+                    <label>
+                        <input type="radio" name="isExclusive" value="false" [(ngModel)]="isExclusiveForm">
+                        Complementary (multiple answers possible)
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="!isAdmin" class="form-inline ask-question">
             <div class="form-group">
                 <input class="form-control" type="text" placeholder="Enter your question" [(ngModel)]="questionForm"/>
                 <button class="btn btn-primary" (click)="sendQuestion()">Send</button>
@@ -30,24 +61,117 @@
                             <div class="poll-answers-radio" *ngIf="asPoll(card).isExclusive">
                                 <div *ngFor="let answer of asPoll(card).answers; let i = index">
                                     <label>
-                                        <input type="radio" name="{{asPoll(card).id}}" value="{{i}}">
+                                        <input type="radio" name="{{asPoll(card).id}}" value="{{answer.id}}" [(ngModel)]="pollAnswersRadio[asPoll(card).id].value">
                                         {{answer.title}}
                                     </label>
-                                </div>
-                                <div class="send-poll">
-                                    <button class="btn btn-default">Submit</button>
                                 </div>
                             </div>
                             <div class="poll-answers-checkbox" *ngIf="!asPoll(card).isExclusive">
                                 <div *ngFor="let answer of asPoll(card).answers; let i = index">
                                     <label>
-                                        <input type="checkbox" name="">
+                                        <input type="checkbox" [(ngModel)]="pollAnswersCheckbox[asPoll(card).id][answer.id].value">
                                         {{answer.title}}
                                     </label>
                                 </div>
-                                <div class="send-poll">
-                                    <button class="btn btn-default">Submit</button>
+                            </div>
+                            <div class="send-poll" *ngIf="!isAdmin">
+                                <button class="btn btn-default" (click)="answerPoll(asPoll(card))">Submit</button>
+                            </div>
+                            <div class="view-stats" *ngIf="isAdmin" (click)="goToStats(asPoll(card))">
+                                <i class="fa fa-bar-chart"></i>
+                                View Live Results
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="dashboard-column" id="column-2">
+                <div class="card" *ngFor="let card of cards; let j = index">
+                    <div class="card-container" *ngIf="j%3 === 1" [class.card-poll]="isPoll(card)">
+                        <div *ngIf="isQuestion(card)" class="card-question">
+                            <h4>{{asQuestion(card).title}}</h4>
+                            <div class="bottom-question">
+                                <div class="vote">
+                                    <i class="fa fa-thumbs-down" (click)="downvote(asQuestion(card))"></i>
+                                    <span class="vote-count">{{asQuestion(card).balance}}</span>
+                                    <i class="fa fa-thumbs-up" (click)="upvote(asQuestion(card))"></i>
                                 </div>
+                                <div class="comment" (click)="goToComments(asQuestion(card))">
+                                    <span class="comments-count">{{asQuestion(card).comments.length}}</span>
+                                    <i class="fa fa-comment"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="isPoll(card)" class="card-poll-container">
+                            <h4>{{asPoll(card).title}}</h4>
+                            <div class="poll-answers-radio" *ngIf="asPoll(card).isExclusive">
+                                <div *ngFor="let answer of asPoll(card).answers; let i = index">
+                                    <label>
+                                        <input type="radio" name="{{asPoll(card).id}}" value="{{answer.id}}" [(ngModel)]="pollAnswersRadio[asPoll(card).id].value">
+                                        {{answer.title}}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="poll-answers-checkbox" *ngIf="!asPoll(card).isExclusive">
+                                <div *ngFor="let answer of asPoll(card).answers; let i = index">
+                                    <label>
+                                        <input type="checkbox" [(ngModel)]="pollAnswersCheckbox[asPoll(card).id][answer.id].value">
+                                        {{answer.title}}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="send-poll" *ngIf="!isAdmin">
+                                <button class="btn btn-default" (click)="answerPoll(asPoll(card))">Submit</button>
+                            </div>
+                            <div class="view-stats" *ngIf="isAdmin" (click)="goToStats(asPoll(card))">
+                                <i class="fa fa-bar-chart"></i>
+                                View Live Results
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="dashboard-column" id="column-3">
+                <div class="card" *ngFor="let card of cards; let j = index">
+                    <div class="card-container" *ngIf="j%3 === 2" [class.card-poll]="isPoll(card)">
+                        <div *ngIf="isQuestion(card)" class="card-question">
+                            <h4>{{asQuestion(card).title}}</h4>
+                            <div class="bottom-question">
+                                <div class="vote">
+                                    <i class="fa fa-thumbs-down" (click)="downvote(asQuestion(card))"></i>
+                                    <span class="vote-count">{{asQuestion(card).balance}}</span>
+                                    <i class="fa fa-thumbs-up" (click)="upvote(asQuestion(card))"></i>
+                                </div>
+                                <div class="comment" (click)="goToComments(asQuestion(card))">
+                                    <span class="comments-count">{{asQuestion(card).comments.length}}</span>
+                                    <i class="fa fa-comment"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="isPoll(card)" class="card-poll-container">
+                            <h4>{{asPoll(card).title}}</h4>
+                            <div class="poll-answers-radio" *ngIf="asPoll(card).isExclusive">
+                                <div *ngFor="let answer of asPoll(card).answers; let i = index">
+                                    <label>
+                                        <input type="radio" name="{{asPoll(card).id}}" value="{{answer.id}}" [(ngModel)]="pollAnswersRadio[asPoll(card).id].value">
+                                        {{answer.title}}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="poll-answers-checkbox" *ngIf="!asPoll(card).isExclusive">
+                                <div *ngFor="let answer of asPoll(card).answers; let i = index">
+                                    <label>
+                                        <input type="checkbox" [(ngModel)]="pollAnswersCheckbox[asPoll(card).id][answer.id].value">
+                                        {{answer.title}}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="send-poll" *ngIf="!isAdmin">
+                                <button class="btn btn-default" (click)="answerPoll(asPoll(card))">Submit</button>
+                            </div>
+                            <div class="view-stats" *ngIf="isAdmin" (click)="goToStats(asPoll(card))">
+                                <i class="fa fa-bar-chart"></i>
+                                View Live Results
                             </div>
                         </div>
                     </div>

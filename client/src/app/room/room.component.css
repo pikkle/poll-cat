@@ -13,6 +13,40 @@
     align-items: center;
 }
 
+.admin-panel {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.admin-panel .admin-form-type {
+    width: 265px;
+}
+
+.roomlink-link {
+    cursor: pointer;
+    margin-left: 130px;
+}
+
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.admin-form button {
+    width: 100%;
+}
+
+.admin-form input {
+    margin-bottom: 5px;
+}
+
+.poll-name {
+    width: 500px;
+}
+
 .ask-question {
     display: flex;
     justify-content: center;
@@ -88,4 +122,9 @@
 
 .send-poll {
     text-align: center;
+}
+
+.view-stats {
+    text-align: center;
+    cursor: pointer;
 }

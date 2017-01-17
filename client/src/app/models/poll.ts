@@ -4,7 +4,7 @@ export class Poll {
 	            public timestamp: Date,
 	            public isExclusive: boolean,
 	            public answers: {
-					id: string,
+					id: number,
 		            title: string,
 		            votes: number
 	            }[]) {

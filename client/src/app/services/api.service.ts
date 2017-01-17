@@ -5,6 +5,7 @@ import {Observable, Subject} from "rxjs";
 import {Room} from "../models/room";
 import {Question} from "../models/question";
 import {Comment} from "../models/comment";
+import {Poll} from "../models/poll";
 
 @Injectable()
 export class ApiService {
@@ -61,18 +62,24 @@ export class ApiService {
 			.subscribe(data => {
 				var d = this.extractData(data);
 				var questions: Question[] = [];
-				console.log(d.questions);
 				for (let q of d.questions) {
 					var comments: Comment[] = [];
 					for (let c of q.comments) {
 						comments.push(new Comment(c.message, new Date(c.timestamp)));
 					}
-
 					questions.push(new Question(q.id, q.title, new Date(q.timestamp), q.balance, comments));
 				}
-				this._roomFetch.next(new Room(d.number, d.title, questions, []));
 
-				this._questionsReceive.next(questions);
+				var polls: Poll[] = [];
+				for (let q of d.polls) {
+					var answers = [];
+					for (let a of q.answers) {
+						answers.push({id: a.id, title: a.title, votes: 0});
+					}
+					polls.push(new Poll(q.id, q.title, new Date(q.timestamp), q.isExclusive, answers));
+				}
+
+				this._roomFetch.next(new Room(d.number, d.title, questions, polls));
 			});
 	}
 
@@ -92,9 +99,7 @@ export class ApiService {
 		const data = {'title': title};
 		const options = new RequestOptions({headers: this.jsonHeader});
 		this.http.post(path, JSON.stringify(data), options)
-			.subscribe(data => {
-				var d = this.extractData(data);
-			});
+			.subscribe(data => {});
 	}
 
 	vote(roomId: string, questionId: number, value: number) {
@@ -102,9 +107,7 @@ export class ApiService {
 		const data = {'value': value};
 		const options = new RequestOptions({headers: this.jsonHeader});
 		this.http.post(path, JSON.stringify(data), options)
-			.subscribe(data => {
-				var d = this.extractData(data);
-			});
+			.subscribe(data => {});
 	}
 
 	sendComment(roomId: string, questionId: number, comment: string) {
@@ -112,8 +115,23 @@ export class ApiService {
 		const data = {'message': comment};
 		const options = new RequestOptions({headers: this.jsonHeader});
 		this.http.post(path, JSON.stringify(data), options)
-			.subscribe(data => {
-				var d = this.extractData(data);
-			});
+			.subscribe(data => {});
+	}
+
+	sendPoll(roomId: string, pollName: string, answers: any[], isExclusive: boolean) {
+		const path = this.apiUrl + '/rooms/' + roomId + '/polls';
+		const data = {title: pollName, answers: answers, isExclusive: isExclusive};
+		const options = new RequestOptions({headers: this.jsonHeader});
+		this.http.post(path, JSON.stringify(data), options)
+			.subscribe(data => {});
+	}
+
+	sendAnswer(roomId: string, pollId: number, answers: any[]) {
+		const path = this.apiUrl + '/rooms/' + roomId + '/polls/' + pollId + '/answers';
+		const data = answers;
+		console.log(JSON.stringify(data));
+		const options = new RequestOptions({headers: this.jsonHeader});
+		this.http.post(path, JSON.stringify(data), options)
+			.subscribe(data => {});
 	}
 }

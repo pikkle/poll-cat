@@ -15,6 +15,14 @@ import {SocketService} from "../services/socket.service";
 })
 export class RoomComponent implements OnInit, OnDestroy {
 	private questionForm: string;
+	private pollQuestionForm: string;
+	private pollAnswerForm = [{value: ''}, {value: ''}];
+	private isExclusiveForm: string;
+
+	private pollAnswersRadio = {};
+	private pollAnswersCheckbox = {};
+
+
 	private room: Room;
 	private roomError: boolean = false;
 
@@ -35,13 +43,10 @@ export class RoomComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
+
 		this.sub = this.route.params.subscribe(params => {
 			var roomNumber = params['roomNumber'];
 			this.pollcatService.updateTitle("");
-
-			this.apiService.questionsReceive.subscribe(qs => {
-				this.cards = qs;
-			});
 
 			this.socketService.questionReceive.subscribe(q => {
 				this.cards.push(q);
@@ -57,12 +62,40 @@ export class RoomComponent implements OnInit, OnDestroy {
 				}
 			});
 
+			this.socketService.pollReceive.subscribe(p => {
+				this.cards.push(p);
+				if (p.isExclusive) {
+					this.pollAnswersRadio[p.id] = {value: ''}
+				} else {
+					var answers = {};
+					for (let a of p.answers) {
+						answers[a.id] = {value: false};
+					}
+					this.pollAnswersCheckbox[p.id] = answers;
+				}
+			});
+
 			this.apiService.roomAuth.subscribe(isAdmin => {
 				this.isAdmin = isAdmin;
 			});
 
 			this.apiService.roomFetch.subscribe(room => {
 				this.room = room;
+				this.cards = room.questions;
+				this.cards = this.cards.concat(room.polls);
+
+				for (let p of room.polls) {
+					if (p.isExclusive) {
+						this.pollAnswersRadio[p.id] = {value: ''}
+					} else {
+						var answers = {};
+						for (let a of p.answers) {
+							answers[a.id] = {id: a.id, value: false};
+						}
+						this.pollAnswersCheckbox[p.id] = answers;
+					}
+				}
+
 				this.pollcatService.updateTitle(room.title);
 				this.apiService.authRoom(room.id);
 			});
@@ -114,7 +147,15 @@ export class RoomComponent implements OnInit, OnDestroy {
 	}
 
 	goToComments(q: Question): void {
-		this.router.navigateByUrl('/room/'+ this.room.id + '/' + q.id);
+		this.router.navigateByUrl('/room/' + this.room.id + '/comments/' + q.id);
+	}
+
+	goToStats(p: Poll): void {
+		this.router.navigateByUrl('/room/' + this.room.id + '/stats/' + p.id);
+	}
+
+	openRoomLink(): void {
+		this.router.navigateByUrl('/room/' + this.room.id + '/link');
 	}
 
 	sendQuestion(): void {
@@ -122,6 +163,37 @@ export class RoomComponent implements OnInit, OnDestroy {
 			this.apiService.sendQuestion(this.room.id, this.questionForm);
 			this.questionForm = '';
 		}
+	}
+
+	addAnswer(): void {
+		this.pollAnswerForm.push({value: ''});
+	}
+
+	sendPoll(): void {
+		if (this.isExclusiveForm && this.pollQuestionForm && this.pollAnswerForm[0].value !== '' && this.pollAnswerForm[1].value !== '') {
+			var isExclusive = this.isExclusiveForm === 'true';
+			var answers: any[] = [];
+			for (let a of this.pollAnswerForm) {
+				if (a.value) answers.push({'title': a.value});
+			}
+			this.apiService.sendPoll(this.room.id, this.pollQuestionForm, answers, isExclusive);
+			this.pollQuestionForm = '';
+			this.pollAnswerForm = [{value: ''}, {value: ''}];
+		}
+	}
+
+	answerPoll(p: Poll): void {
+		var answers = [];
+		if (p.isExclusive) {
+			answers.push({id: +this.pollAnswersRadio[p.id].value, vote: true});
+		} else {
+			for (var a in this.pollAnswersCheckbox[p.id]) {
+				if (this.pollAnswersCheckbox[p.id].hasOwnProperty(a)) {
+					answers.push({id: this.pollAnswersCheckbox[p.id][a].id, vote: this.pollAnswersCheckbox[p.id][a].value});
+				}
+			}
+		}
+		this.apiService.sendAnswer(this.room.id, p.id, answers);
 	}
 
 }
