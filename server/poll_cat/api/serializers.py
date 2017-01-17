@@ -44,10 +44,8 @@ class RoomSerializer(serializers.ModelSerializer):
         fields = ('title', 'number', 'questions', 'polls')
 
 
-class RoomSerializerWithToken(serializers.ModelSerializer):
-    questions = QuestionSerializer()
-
+class RoomSerializerWithToken(RoomSerializer):
     class Meta:
         model = Room
-        fields = ('title', 'number', 'token', 'questions')
+        fields = ('title', 'number', 'token', 'questions', 'polls')
 

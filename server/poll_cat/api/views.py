@@ -8,7 +8,7 @@ from uuid import uuid4
 from rest_framework.parsers import JSONParser
 
 from api.models import Room, Question, Comment, Vote, Poll, Answer, get_or_none, AnswerToPoll
-from api.serializers import QuestionSerializer, RoomSerializer, PollSerializer
+from api.serializers import QuestionSerializer, RoomSerializer, PollSerializer, RoomSerializerWithToken
 
 
 class Rooms (APIView):
@@ -29,7 +29,7 @@ class Rooms (APIView):
         room.save()
         request.session['room_admin_uuid'] = uuid
 
-        return Response(RoomSerializer(room).data, status=201)
+        return Response(RoomSerializerWithToken(room).data, status=201)
 
 
 class AnswersToPoll(APIView):
@@ -69,7 +69,7 @@ class Auth (APIView):
     def post(self, request):
         request.session.save()
         json = JSONParser().parse(request)
-        room = Room.objects.filter(token=json['token']).first()
+        room = get_or_none(Room, token=json['token'])
         if room:
             request.session['room_admin_uuid'] = room.number
             return Response({}, status=200)
@@ -190,6 +190,7 @@ class Votes(APIView):
 class Polls (APIView):
     def post(self, request, room_number):
         request.session.save()
+
         if 'room_admin_uuid' not in request.session or request.session['room_admin_uuid'] != room_number:
             return Response({"error": "you can't post polls for this room"}, status=401)
         else:
@@ -215,6 +216,3 @@ class Polls (APIView):
 
             else:
                 return Response({"error": "no room " + room.number + " found"}, status=404)
-
-
-
