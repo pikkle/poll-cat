@@ -1,12 +1,11 @@
-
-
 export class Question {
-	id: number;
-	title: string;
-	timestamp: number;
-	vote: number;
-	comments: {
-		message: string,
-		timestamp: number
-	}[];
+
+	constructor(public id: number,
+	            public title: string,
+	            public timestamp: number,
+	            public vote: number,
+	            public comments: {
+		            message: string,
+		            timestamp: number
+	            }[]) {}
 }

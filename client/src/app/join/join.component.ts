@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from "@angular/router";
 import {PollcatService} from "../services/pollcat.service";
+import {SocketService} from "../services/socket.service";
 
 @Component({
 	selector: 'app-join',
@@ -20,7 +21,9 @@ export class JoinComponent implements OnInit {
 	}
 
 	joinRoom() {
-		console.log(this.roomNumberForm);
+		if (this.roomNumberForm) {
+			this.router.navigateByUrl("/room/" + this.roomNumberForm);
+		}
 	}
 
 }

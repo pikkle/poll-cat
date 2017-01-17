@@ -4,11 +4,11 @@
             <div class="form-group">
                 <input class="form form-control" type="text" placeholder="Enter your room name"
                        [(ngModel)]="roomNameForm">
-                <input type="checkbox" [(ngModel)]="audienceCanAskForm" id="audienceAsk" checked/>
+                <input type="checkbox" [(ngModel)]="audienceCanAskForm" id="audienceAsk"/>
                 <label for="audienceAsk">Audience can post questions on the room dashboard</label>
             </div>
             <div class="form-group">
-                <button class="btn btn-primary" id="join-room" (click)="joinRoom()">Open room</button>
+                <button class="btn btn-primary" id="join-room" (click)="openRoom()" [disabled]="!roomNameForm">Open room</button>
             </div>
         </div>
     </div>

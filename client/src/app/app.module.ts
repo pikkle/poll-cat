@@ -12,12 +12,16 @@ import {PollcatService} from "./services/pollcat.service";
 import { MenuComponent } from './menu/menu.component';
 import { JoinComponent } from './join/join.component';
 import { OpenComponent } from './open/open.component';
+import {SocketService} from "./services/socket.service";
+import { RoomComponent } from './room/room.component';
+import {ApiService} from "./services/api.service";
 
 const appRoutes: Routes = [
 	{path: '', component: MenuComponent},
 	{path: 'open', component: OpenComponent},
 	{path: 'join', component: JoinComponent},
-	{path: 'roomlink/:roomNumber', component: RoomlinkComponent}
+	{path: 'room/:roomNumber', component: RoomComponent},
+	{path: 'room/:roomNumber/link', component: RoomlinkComponent}
 ];
 
 @NgModule({
@@ -28,7 +32,8 @@ const appRoutes: Routes = [
 		FootbarComponent,
 		MenuComponent,
 		JoinComponent,
-		OpenComponent
+		OpenComponent,
+		RoomComponent
 	],
 	imports: [
 		RouterModule.forRoot(appRoutes),
@@ -38,7 +43,8 @@ const appRoutes: Routes = [
 	],
 	providers: [
 		PollcatService,
-		SocketService
+		SocketService,
+		ApiService
 	],
 	bootstrap: [AppComponent]
 })

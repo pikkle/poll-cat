@@ -1,10 +1,11 @@
-
 export class Poll {
-	id: number;
-	title: string;
-	isExclusive: boolean;
-	answers: {
-		title: string,
-		votes: number
-	}[]
+	constructor(public id: number,
+	            public title: string,
+	            public isExclusive: boolean,
+	            public answers: {
+		            title: string,
+		            votes: number
+	            }[]) {
+
+	}
 }

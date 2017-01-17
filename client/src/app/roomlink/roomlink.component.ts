@@ -2,6 +2,9 @@ import {Component, OnInit, Input} from '@angular/core';
 import {PollcatService} from "../services/pollcat.service";
 import {Router, ActivatedRoute} from "@angular/router";
 import {Location} from "@angular/common";
+import {SocketService} from "../services/socket.service";
+import {Room} from "../models/room";
+import {ApiService} from "../services/api.service";
 
 @Component({
 	selector: 'app-roomlink',
@@ -9,23 +12,40 @@ import {Location} from "@angular/common";
 	styleUrls: ['./roomlink.component.css']
 })
 export class RoomlinkComponent implements OnInit {
-	private roomNumber: number;
-	private title: string = "Placeholder for Room Name";
+	private roomNumber: string;
+	private roomError: boolean;
 
 	constructor(private location: Location,
 	            private route: ActivatedRoute,
 	            private router: Router,
+	            private apiService: ApiService,
+	            private socketService: SocketService,
 	            private pollcatService: PollcatService) {
-		pollcatService.updateTitle(this.title);
+
 	}
 
 	ngOnInit() {
-		this.roomNumber = this.route.snapshot.params['roomNumber']; //TODO: check that user has control over selected room (if he has it in his rooms list)
+		this.route.params.subscribe(params => {
+			this.roomNumber = params['roomNumber'];
+			this.pollcatService.updateTitle("");
 
+			this.apiService.roomFetch.subscribe(room => {
+				this.roomNumber = room.id;
+				this.pollcatService.updateTitle(room.title);
+			});
+
+			this.socketService.roomJoin.subscribe(join => {
+				this.apiService.fetchRoom(this.roomNumber);
+			}, error => {
+				this.roomError = true;
+			});
+			this.socketService.joinRoom(this.roomNumber);
+
+		});
 	}
 
 	goBack(): void {
-		this.location.back();
+		this.router.navigateByUrl('/room/' + this.roomNumber);
 	}
 
 }
