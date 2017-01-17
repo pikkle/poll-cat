@@ -95,14 +95,17 @@ class AuthForRoom (APIView):
 class Questions (APIView):
     def get(self, request, room_number):
         request.session.save()
-        questions = Room.objects.get(number=room_number).question_set.all()
-        json = QuestionSerializer(questions, many=True)
-        return Response(json.data, status=200)
+        room = get_or_none(Room, number=room_number)
+
+        if room:
+            return Response(QuestionSerializer(room.question_set.all(), many=True), status=200)
+        else:
+            return Response({'error': 'room not found'}, status=404)
 
     def post(self, request, room_number):
         request.session.save()
         json = JSONParser().parse(request)
-        room = Room.objects.filter(number=room_number).first()
+        room = get_or_none(Room, number=room_number)
 
         if room:
             question = Question(room=room, title=json['title'], balance=0)
@@ -126,7 +129,7 @@ class Comments(APIView):
     def post(self, request, room_number, question_id):
         request.session.save()
         json = JSONParser().parse(request)
-        question = Question.objects.filter(pk=question_id).first()
+        question = get_or_none(Question, pk=question_id)
 
         if question and question.room.number == room_number:
             comment = Comment(question=question, message=json['message'])
@@ -151,23 +154,24 @@ class Votes(APIView):
         request.session.save()
         session = Session.objects.get(session_key=request.session.session_key)
         json = JSONParser().parse(request)
-        question = Question.objects.filter(pk=question_id).first()
-
+        question = get_or_none(Question, pk=question_id)
         if question and question.room.number == room_number:
             vote = Question.objects.get(pk=question_id).vote_set.filter(owner=session).all().first()
 
             if vote:
                 return Response({'error': 'you have already vote for this question'}, status=403)
             else:
-                vote = Vote(question=question, owner=session)
-                vote.save()
-
-                value = int('0' + json['value'])
+                value = json['value']
 
                 if value > 1:
                     question.balance += 1
                 elif value < -1:
                     question.balance -= 1
+
+                question.save()
+
+                vote = Vote(question=question, owner=session)
+                vote.save()
 
                 Group('room-%s' % question.room.number).send({
                     'text': dumps({
@@ -189,7 +193,7 @@ class Polls (APIView):
         if 'room_admin_uuid' not in request.session or request.session['room_admin_uuid'] != room_number:
             return Response({"error": "you can't post polls for this room"}, status=401)
         else:
-            room = Room.objects.filter(number=room_number).first()
+            room = get_or_none(Room, number=room_number)
             if room:
                 json = JSONParser().parse(request)
                 poll = Poll(room=room, title=json['title'], isExclusive=json['isExclusive'])

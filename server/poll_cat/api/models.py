@@ -22,10 +22,10 @@ class Room (Model):
         return self.title
 
     def questions(self):
-        return self.question_set
+        return self.question_set.order_by('timestamp')
 
     def polls(self):
-        return self.poll_set
+        return self.poll_set.order_by('timestamp')
 
 
 class Question (Model):
