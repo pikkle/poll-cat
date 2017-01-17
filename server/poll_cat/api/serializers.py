@@ -32,7 +32,7 @@ class PollSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Poll
-        fields = ('id', 'title', 'timestamp', 'answer')
+        fields = ('id', 'title', 'isExclusive', 'timestamp', 'answers')
 
 
 class RoomSerializer(serializers.ModelSerializer):

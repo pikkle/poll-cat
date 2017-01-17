@@ -8,7 +8,7 @@ from uuid import uuid4
 from rest_framework.parsers import JSONParser
 
 from api.models import Room, Question, Comment, Vote, Poll, Answer, get_or_none, AnswerToPoll
-from api.serializers import QuestionSerializer, RoomSerializer
+from api.serializers import QuestionSerializer, RoomSerializer, PollSerializer
 
 
 class Rooms (APIView):
@@ -199,11 +199,11 @@ class Polls (APIView):
                     answer = Answer(poll=poll, title=item['title'], votes=0)
                     answer.save()
 
-                    Group('room-%s' % question.room.number).send({
+                    Group('room-%s' % poll.room.number).send({
                         'text': dumps({
                             'type': 'poll',
                             'action': 'create',
-                            'data': 'data'
+                            'data': PollSerializer(poll).data
                         })
                     })
 
