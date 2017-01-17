@@ -21,6 +21,12 @@ class Room (Model):
     def __str__(self):
         return self.title
 
+    def questions(self):
+        return self.question_set
+
+    def polls(self):
+        return self.poll_set
+
 
 class Question (Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
@@ -48,6 +54,9 @@ class Poll (Model):
     title = models.CharField(max_length=50)
     timestamp = models.DateTimeField(auto_now_add=True)
     isExclusive = models.BooleanField()
+
+    def answers(self):
+        return self.answer_set
 
 
 class Answer (Model):
