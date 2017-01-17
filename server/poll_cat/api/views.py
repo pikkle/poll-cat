@@ -80,7 +80,7 @@ class Auth (APIView):
 class AuthForRoom (APIView):
     def get(self, request, room_number):
         request.session.save()
-        if 'room_admin_uuid'  not in request.session:
+        if 'room_admin_uuid' in request.session:
 
             room = get_or_none(Room, number=request.session['room_admin_uuid'])
             if room and room.number == room_number:
