@@ -208,13 +208,13 @@ class Polls (APIView):
                     answer = Answer(poll=poll, title=item['title'], votes=0)
                     answer.save()
 
-                    Group('room-%s' % poll.room.number).send({
-                        'text': dumps({
-                            'type': 'poll',
-                            'action': 'create',
-                            'data': PollSerializer(poll).data
-                        })
+                Group('room-%s' % poll.room.number).send({
+                    'text': dumps({
+                        'type': 'poll',
+                        'action': 'create',
+                        'data': PollSerializer(poll).data
                     })
+                })
 
                 return Response({}, status=201)
 
