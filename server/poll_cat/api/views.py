@@ -77,6 +77,16 @@ class Auth (APIView):
             return Response({'error': 'this token is invalid'}, status=403)
 
 
+class AuthForRoom (APIView):
+    def get(self, request, room_number):
+        request.session.save()
+        room = Room.objects.filter(request.session['roo_admin_uuid']).first()
+        if room and room.number == room_number:
+            return Response({'admin': True}, status=200)
+        else:
+            return Response({'admin': False}, status=403)
+
+
 class Questions (APIView):
     def get(self, request, room_number):
         request.session.save()
@@ -101,10 +111,10 @@ class Questions (APIView):
                 })
             })
 
-            return Response({"id": question.pk}, status=201)
+            return Response(QuestionSerializer(question).data, status=201)
 
         else:
-            return Response({"error": "no room " + room.number + " found"}, status=404)
+            return Response({"error": "no room " + room_number + " found"}, status=404)
 
 
 class Comments(APIView):

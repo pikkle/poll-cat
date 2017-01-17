@@ -25,7 +25,7 @@ class Room (Model):
 class Question (Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
-    timestamp = models.DateField(auto_now_add=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
     balance = models.IntegerField()
 
     def comments(self):
@@ -46,6 +46,7 @@ class Comment (Model):
 class Poll (Model):
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     title = models.CharField(max_length=50)
+    timestamp = models.DateTimeField(auto_now_add=True)
     isExclusive = models.BooleanField()
 
 
