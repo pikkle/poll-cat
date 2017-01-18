@@ -26,7 +26,7 @@ export class RoomComponent implements OnInit, OnDestroy {
 	private room: Room;
 	private roomError: boolean = false;
 
-	private sub: Subscription;
+	private subs: Subscription[] = [];
 
 	private hasVoted: boolean = false;
 
@@ -43,16 +43,15 @@ export class RoomComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-
-		this.sub = this.route.params.subscribe(params => {
+		this.subs.push(this.route.params.subscribe(params => {
 			var roomNumber = params['roomNumber'];
 			this.pollcatService.updateTitle("");
 
-			this.socketService.questionReceive.subscribe(q => {
+			this.subs.push(this.socketService.questionReceive.subscribe(q => {
 				this.cards.push(q);
-			});
+			}));
 
-			this.socketService.questionUpdate.subscribe(q => {
+			this.subs.push(this.socketService.questionUpdate.subscribe(q => {
 				for (let c of this.cards) {
 					if (c instanceof Question && this.asQuestion(c).id === q.id) {
 						console.log(q);
@@ -60,9 +59,9 @@ export class RoomComponent implements OnInit, OnDestroy {
 						c.comments = q.comments;
 					}
 				}
-			});
+			}));
 
-			this.socketService.pollReceive.subscribe(p => {
+			this.subs.push(this.socketService.pollReceive.subscribe(p => {
 				this.cards.push(p);
 				if (p.isExclusive) {
 					this.pollAnswersRadio[p.id] = {value: ''}
@@ -73,13 +72,13 @@ export class RoomComponent implements OnInit, OnDestroy {
 					}
 					this.pollAnswersCheckbox[p.id] = answers;
 				}
-			});
+			}));
 
-			this.apiService.roomAuth.subscribe(isAdmin => {
+			this.subs.push(this.apiService.roomAuth.subscribe(isAdmin => {
 				this.isAdmin = isAdmin;
-			});
+			}));
 
-			this.apiService.roomFetch.subscribe(room => {
+			this.subs.push(this.apiService.roomFetch.subscribe(room => {
 				this.room = room;
 				this.cards = room.questions;
 				this.cards = this.cards.concat(room.polls);
@@ -98,20 +97,22 @@ export class RoomComponent implements OnInit, OnDestroy {
 
 				this.pollcatService.updateTitle(room.title);
 				this.apiService.authRoom(room.id);
-			});
+			}));
 
-			this.socketService.roomJoin.subscribe(join => {
+			this.subs.push(this.socketService.roomJoin.subscribe(join => {
 				this.apiService.fetchRoom(roomNumber);
 			}, error => {
 				this.roomError = true;
-			});
+			}));
 			this.socketService.joinRoom(roomNumber);
-		});
+		}));
 
 	}
 
 	ngOnDestroy() {
-		this.sub.unsubscribe();
+		for (let sub of this.subs) {
+			sub.unsubscribe();
+		}
 	}
 
 	isQuestion(card: any): boolean {

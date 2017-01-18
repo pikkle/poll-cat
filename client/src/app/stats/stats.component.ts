@@ -1,17 +1,18 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, OnDestroy} from '@angular/core';
 import {Router, ActivatedRoute} from "@angular/router";
 import {ApiService} from "../services/api.service";
 import {PollcatService} from "../services/pollcat.service";
 import {SocketService} from "../services/socket.service";
 import {Poll} from "../models/poll";
 import {Room} from "../models/room";
+import {Subscription} from "rxjs";
 
 @Component({
 	selector: 'app-stats',
 	templateUrl: './stats.component.html',
 	styleUrls: ['./stats.component.css'],
 })
-export class StatsComponent implements OnInit {
+export class StatsComponent implements OnInit, OnDestroy {
 	private room: Room;
 	private poll: Poll;
 	private pollTitle: string = 'Loading...';
@@ -21,13 +22,15 @@ export class StatsComponent implements OnInit {
 		scaleShowVerticalLines: false,
 		responsive: true
 	};
-	public barChartLabels: string[] = ['2006', '2007', '2008', '2009', '2010', '2011', '2012'];
+	public barChartLabels: string[] = [];
 	public barChartType: string = 'bar';
 	public barChartLegend: boolean = true;
 
 	public barChartData: any[] = [
-		{data: [65, 59, 80, 81, 56, 55, 40], label: 'Number of votes'}
+		{data: [], label: 'Number of votes'}
 	];
+
+	private subs: Subscription[] = [];
 
 	constructor(private router: Router,
 	            private route: ActivatedRoute,
@@ -44,7 +47,9 @@ export class StatsComponent implements OnInit {
 			this.pollcatService.updateTitle("");
 
 			this.socketService.pollUpdate.subscribe(poll => {
-				if (poll.id === pollId+1) {
+				console.log(pollId);
+				console.log(poll.id);
+				if (poll.id === pollId) {
 					this.poll = poll;
 					this.barChartData[0]['data'] = [];
 					for (let a of poll.answers) {
@@ -73,6 +78,12 @@ export class StatsComponent implements OnInit {
 			});
 			this.socketService.joinRoom(roomNumber);
 		});
+	}
+
+	ngOnDestroy() {
+		for (let sub of this.subs) {
+			sub.unsubscribe();
+		}
 	}
 
 	goBack(): void {
