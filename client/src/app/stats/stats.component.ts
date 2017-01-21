@@ -81,6 +81,7 @@ export class StatsComponent implements OnInit, OnDestroy {
 
 	ngOnDestroy() {
 		this.subs.map(s => s.unsubscribe());
+		this.socketService.closeSocket();
 	}
 
 	goBack(): void {

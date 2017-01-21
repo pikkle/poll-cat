@@ -74,4 +74,8 @@ export class SocketService {
 
 	}
 
+	closeSocket(){
+		this.socket.close();
+	}
+
 }

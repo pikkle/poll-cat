@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {PollcatService} from "./services/pollcat.service";
 import {Subscription} from "rxjs";
+import {OnDestroy} from "@angular/core";
 
 @Component({
 	selector: 'app-root',

@@ -55,6 +55,8 @@ export class RoomlinkComponent implements OnInit, OnDestroy {
 		for (let sub of this.subs) {
 			sub.unsubscribe();
 		}
+
+		this.socketService.closeSocket();
 	}
 
 }
