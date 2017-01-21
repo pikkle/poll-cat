@@ -12,9 +12,6 @@ export class ApiService {
 	private apiUrl = 'http://' + environment.apiAddress;
 	private jsonHeader = new Headers({'Content-Type': 'application/json'});
 
-	private _questionsReceive: Subject<Question[]> = new Subject<Question[]>();
-	public questionsReceive: Observable<Question[]> = this._questionsReceive.asObservable();
-
 	private _roomCreation: Subject<Room> = new Subject<Room>();
 	public roomCreation: Observable<Room> = this._roomCreation.asObservable();
 

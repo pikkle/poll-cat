@@ -23,7 +23,7 @@ export class SocketService {
 	public pollReceive: Observable<Poll> = this._pollReceive.asObservable();
 
 	private _pollUpdate: Subject<Poll> = new Subject<Poll>();
-	public pollUpdate: Observable<Poll> = this._pollReceive.asObservable();
+	public pollUpdate: Observable<Poll> = this._pollUpdate.asObservable();
 
 	private _socketError: Subject<any> = new Subject();
 	public socketError: Observable<any> = this._socketError.asObservable();
