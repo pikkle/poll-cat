@@ -4,11 +4,8 @@
   "license": "MIT",
   "angular-cli": {},
   "scripts": {
-    "start": "ng serve --host 0.0.0.0 --proxy-config proxy.conf.json",
-    "lint": "tslint \"src/**/*.ts\"",
-    "test": "ng test",
-    "pree2e": "webdriver-manager update",
-    "e2e": "protractor"
+    "build": "webpack --progress",
+    "serve": "webpack-dev-server --inline --progress --host 0.0.0.0"
   },
   "private": true,
   "dependencies": {
@@ -23,27 +20,30 @@
     "chart.js": "^2.4.0",
     "core-js": "^2.4.1",
     "ng2-charts": "^1.5.0",
+    "reflect-metadata": "^0.1.9",
     "rxjs": "5.0.0-beta.12",
     "ts-helpers": "^1.1.1",
     "zone.js": "^0.6.23"
   },
   "devDependencies": {
-    "@angular/compiler-cli": "2.2.1",
-    "@types/jasmine": "2.5.38",
-    "@types/node": "^6.0.42",
-    "angular-cli": "1.0.0-beta.21",
-    "codelyzer": "~1.0.0-beta.3",
-    "jasmine-core": "2.5.2",
-    "jasmine-spec-reporter": "2.5.0",
-    "karma": "1.2.0",
-    "karma-chrome-launcher": "^2.0.0",
-    "karma-cli": "^1.0.1",
-    "karma-jasmine": "^1.0.2",
-    "karma-remap-istanbul": "^0.2.1",
-    "protractor": "4.0.9",
-    "ts-node": "1.2.1",
-    "tslint": "3.13.0",
-    "typescript": "~2.0.3",
-    "webdriver-manager": "10.2.5"
+    "@types/core-js": "^0.9.34",
+    "@types/node": "^6.0.46",
+    "@types/selenium-webdriver": "^2.53.36",
+    "angular2-template-loader": "^0.6.0",
+    "copy-webpack-plugin": "^4.0.0",
+    "css-loader": "^0.25.0",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.9.0",
+    "html-loader": "^0.4.4",
+    "html-webpack-plugin": "^2.24.1",
+    "raw-loader": "^0.5.1",
+    "style-loader": "^0.13.1",
+    "ts-loader": "^1.1.0",
+    "typescript": "^2.0.3",
+    "typings": "^2.0.0",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.3",
+    "webpack-dev-server": "^1.16.2",
+    "webpack-merge": "^0.15.0"
   }
 }

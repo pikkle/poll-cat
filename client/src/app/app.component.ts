@@ -1,5 +1,4 @@
 import {Component} from '@angular/core';
-import {PollCatPage} from "../../e2e/app.po";
 import {PollcatService} from "./services/pollcat.service";
 
 @Component({
