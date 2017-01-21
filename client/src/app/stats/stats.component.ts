@@ -40,25 +40,24 @@ export class StatsComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit() {
-		this.route.params.subscribe(params => {
+		this.subs.push(this.route.params.subscribe(params => {
 			var roomNumber = params['roomNumber'];
 			var pollId = +params['pollId'];
-			console.log(pollId);
 			this.pollcatService.updateTitle("");
 
-			this.socketService.pollUpdate.subscribe(poll => {
-				console.log(pollId);
-				console.log(poll.id);
+			this.subs.push(this.socketService.pollUpdate.subscribe(poll => {
 				if (poll.id === pollId) {
 					this.poll = poll;
+					this.barChartLabels = [];
 					this.barChartData[0]['data'] = [];
 					for (let a of poll.answers) {
+						this.barChartLabels.push(a.title);
 						this.barChartData[0]['data'].push(a.votes);
 					}
 				}
-			});
+			}));
 
-			this.apiService.roomFetch.subscribe(room => {
+			this.subs.push(this.apiService.roomFetch.subscribe(room => {
 				this.room = room;
 				var poll = room.polls.find(p => p.id === pollId);
 				this.poll = poll;
@@ -70,20 +69,18 @@ export class StatsComponent implements OnInit, OnDestroy {
 					this.barChartData[0]['data'].push(a.votes);
 				}
 				this.pollcatService.updateTitle(room.title);
-			});
+			}));
 
-			this.socketService.roomJoin.subscribe(join => {
+			this.subs.push(this.socketService.roomJoin.subscribe(join => {
 				this.apiService.fetchRoom(roomNumber);
 			}, error => {
-			});
+			}));
 			this.socketService.joinRoom(roomNumber);
-		});
+		}));
 	}
 
 	ngOnDestroy() {
-		for (let sub of this.subs) {
-			sub.unsubscribe();
-		}
+		this.subs.map(s => s.unsubscribe());
 	}
 
 	goBack(): void {
