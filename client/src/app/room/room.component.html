@@ -48,6 +48,14 @@
                 <button class="btn btn-primary" (click)="changeUsername()">Change</button>
             </div>
         </div>
+
+        <div *ngIf="!isAdmin" class="badges-bar">
+            <div *ngFor="let badge of badges">
+                <img src="/assets/{{badge.image}}"> <br />
+                {{badge.name}}
+            </div>
+        </div>
+
         <div class="dashboard">
             <div class="dashboard-column" id="column-1">
                 <div class="card" *ngFor="let card of cards; let j = index">

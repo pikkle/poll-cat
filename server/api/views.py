@@ -1,10 +1,8 @@
 import json
 from json import dumps
 
-import requests
 from channels import Group
 from django.contrib.sessions.models import Session
-from requests.auth import HTTPBasicAuth
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from uuid import uuid4
@@ -15,6 +13,8 @@ from api.serializers import QuestionSerializer, RoomSerializer, PollSerializer, 
     AnswerSerializer, AnswerWithVoteSerializer
 from poll_cat.settings import HTTPAUTH
 
+from requests_futures.sessions import FuturesSession
+import requests
 
 class Rooms (APIView):
     def get(self, request, room_number):
@@ -174,6 +174,8 @@ class Votes(APIView):
         session = Session.objects.get(session_key=request.session.session_key)
         json = JSONParser().parse(request)
         question = get_or_none(Question, pk=question_id)
+        http_session = FuturesSession()
+
         if question and question.room.number == room_number:
             vote = Question.objects.get(pk=question_id).vote_set.filter(owner=session).all().first()
 
@@ -184,7 +186,15 @@ class Votes(APIView):
 
                 if value > 0:
                     question.balance += 1
+
+                    data = {'userId': session.session_key, 'type': 'thumbUp.receive', 'payload': "{}"}
+                    http_session.post('http://localhost:8888/events', auth=HTTPAUTH, json=data)
+
                 elif value < 0:
+
+                    data = {'userId': session.session_key, 'type': 'thumbDown.receive', 'payload': "{}"}
+                    http_session.post('http://localhost:8888/events', auth=HTTPAUTH, json=data)
+
                     question.balance -= 1
 
                 question.save()
@@ -282,9 +292,15 @@ class Username(APIView):
         return Response({}, status=200)
 
 
-class Level(APIView):
+class Badges(APIView):
     def get(self, request):
         request.session.save()
         session = Session.objects.get(session_key=request.session.session_key)
 
-        return Response({'level': 'niveau 0'}, status=200)
+        resp = requests.get('http://localhost:8888/users/' + session.session_key, auth=HTTPAUTH)
+        data = json.loads(resp.text)
+
+        print(data)
+        return Response({'level': data['level']['name'], 'badges': data['badges']}, status=200)
+
+

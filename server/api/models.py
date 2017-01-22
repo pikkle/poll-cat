@@ -43,17 +43,15 @@ class Question (Model):
         return self.comment_set.all()
 
     def level(self):
-        user = get_or_none(User, session=self.owner)
+        session = get_or_none(Session, session_key=self.owner)
 
-        resp = requests.get('http://localhost:8888/users/' + self.owner.session_key, auth=HTTPBasicAuth('pollcat', 'pollcat'))
-        data = json.loads(resp.text)
-
-        print(data)
-
-        if user:
+        if session:
+            resp = requests.get('http://localhost:8888/users/' + self.owner.session_key,
+                                auth=HTTPBasicAuth('pollcat', 'pollcat'))
+            data = json.loads(resp.text)
             return data['level']['name']
         else:
-            return 'level 0'
+            return 'no level found'
 
     def username(self):
         user = get_or_none(User, session=self.owner)

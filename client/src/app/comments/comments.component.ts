@@ -57,11 +57,13 @@ export class CommentsComponent implements OnInit, OnDestroy {
 			}));
 
 			this.subs.push(this.socketService.roomJoin.subscribe(join => {
-				this.apiService.fetchRoom(roomNumber);
 			}, error => {
 			}));
+
+            this.apiService.fetchRoom(roomNumber);
 			this.socketService.joinRoom(roomNumber);
 		}));
+
 	}
 
 	ngOnDestroy() {

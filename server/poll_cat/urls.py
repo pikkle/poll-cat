@@ -9,7 +9,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^rooms/(?P<room_number>[^/]+)/auth$', views.AuthForRoom.as_view()),
     url(r'^me/username$', views.Username.as_view()),
-    url(r'^me/level$', views.Level.as_view()),
+    url(r'^me/badges$', views.Badges.as_view()),
     url(r'^rooms(/(?P<room_number>[^/]+))?$', views.Rooms.as_view()),
     url(r'^rooms/auth$', views.Auth.as_view()),
     url(r'^rooms/(?P<room_number>[^/]+)/questions$', views.Questions.as_view()),

@@ -6,6 +6,7 @@ import {Room} from "../models/room";
 import {Question} from "../models/question";
 import {Comment} from "../models/comment";
 import {Poll} from "../models/poll";
+import {Badge} from "../models/badge";
 
 @Injectable()
 export class ApiService {
@@ -147,18 +148,22 @@ export class ApiService {
 		const options = new RequestOptions({headers: this.jsonHeader});
 		return this.http.get(path, options).map(res =>{
 			let json = res.json();
-			return json['username'];
+			return json.username;
 		});
 
 	}
 
-	getUserLevel() {
-		const path = this.apiUrl + '/me/level' ;
+
+	getBadges() {
+		const path = this.apiUrl + '/me/badges' ;
 		const options = new RequestOptions({headers: this.jsonHeader});
 		return this.http.get(path, options).map(res =>{
 			let json = res.json();
-			return json['level'];
+			let badges: Badge[] = [];
+			for (let item of json.badges){
+				badges.push(new Badge(item.name, item.image));
+			}
+			return {badges: badges, level: json.level};
 		});
-
 	}
 }
