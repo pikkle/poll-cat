@@ -22,6 +22,8 @@ export class RoomComponent implements OnInit, OnDestroy {
 	private pollAnswersRadio = {};
 	private pollAnswersCheckbox = {};
 
+	private username;
+	private level;
 
 	private room: Room;
 	private roomError: boolean = false;
@@ -93,6 +95,14 @@ export class RoomComponent implements OnInit, OnDestroy {
 						}
 						this.pollAnswersCheckbox[p.id] = answers;
 					}
+
+					this.apiService.getUsername().subscribe(username => {
+						this.username = username;
+					});
+
+					this.apiService.getUserLevel().subscribe(level => {
+					    this.level = level;
+                    })
 				}
 
 				this.pollcatService.updateTitle(room.title);
@@ -165,6 +175,12 @@ export class RoomComponent implements OnInit, OnDestroy {
 		if (this.questionForm) {
 			this.apiService.sendQuestion(this.room.id, this.questionForm);
 			this.questionForm = '';
+		}
+	}
+
+	changeUsername(): void {
+		if (this.username) {
+			this.apiService.changeUsername(this.username);
 		}
 	}
 

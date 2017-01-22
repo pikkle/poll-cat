@@ -64,7 +64,7 @@ export class ApiService {
 					for (let c of q.comments) {
 						comments.push(new Comment(c.message, new Date(c.timestamp)));
 					}
-					questions.push(new Question(q.id, q.title, new Date(q.timestamp), q.balance, comments));
+					questions.push(new Question(q.id, q.title, new Date(q.timestamp), q.balance, q.username, q.level, comments));
 				}
 
 				var polls: Poll[] = [];
@@ -131,5 +131,34 @@ export class ApiService {
 			.subscribe(data => {
 				console.log(data);
 			});
+	}
+
+	changeUsername(username: string) {
+		const path = this.apiUrl + '/me/username' ;
+		const options = new RequestOptions({headers: this.jsonHeader});
+		this.http.post(path, {"username": username}, options)
+			.subscribe(data => {
+				console.log(data);
+			});
+	}
+
+	getUsername() {
+		const path = this.apiUrl + '/me/username' ;
+		const options = new RequestOptions({headers: this.jsonHeader});
+		return this.http.get(path, options).map(res =>{
+			let json = res.json();
+			return json['username'];
+		});
+
+	}
+
+	getUserLevel() {
+		const path = this.apiUrl + '/me/level' ;
+		const options = new RequestOptions({headers: this.jsonHeader});
+		return this.http.get(path, options).map(res =>{
+			let json = res.json();
+			return json['level'];
+		});
+
 	}
 }

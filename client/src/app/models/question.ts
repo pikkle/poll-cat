@@ -6,5 +6,7 @@ export class Question {
 	            public title: string,
 	            public timestamp: Date,
 	            public balance: number,
+				public username: string,
+				public level: string,
 	            public comments: Comment[]) {}
 }

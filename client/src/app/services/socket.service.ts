@@ -49,9 +49,9 @@ export class SocketService {
 			var data = obj.data;
 			if (obj.type === "question") {
 				if (obj.action === "create") {
-					this._questionReceive.next(new Question(data.id, data.title, new Date(data.timestamp), data.balance, data.comments));
+					this._questionReceive.next(new Question(data.id, data.title, new Date(data.timestamp), data.balance, data.username, data.level, data.comments));
 				} else if (obj.action === "update") {
-					this._questionUpdate.next(new Question(data.id, data.title, new Date(data.timestamp), data.balance, data.comments));
+					this._questionUpdate.next(new Question(data.id, data.title, new Date(data.timestamp), data.balance, data.username, data.level, data.comments));
 				}
 			} else if (obj.type === "poll") {
 				if (obj.action === "create") {

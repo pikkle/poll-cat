@@ -1,15 +1,19 @@
+import json
 from json import dumps
 
+import requests
 from channels import Group
 from django.contrib.sessions.models import Session
+from requests.auth import HTTPBasicAuth
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from uuid import uuid4
 from rest_framework.parsers import JSONParser
 
-from api.models import Room, Question, Comment, Vote, Poll, Answer, get_or_none, AnswerToPoll, AnswerToAnswer
+from api.models import Room, Question, Comment, Vote, Poll, Answer, get_or_none, AnswerToPoll, AnswerToAnswer, User
 from api.serializers import QuestionSerializer, RoomSerializer, PollSerializer, RoomWithTokenSerializer, \
     AnswerSerializer, AnswerWithVoteSerializer
+from poll_cat.settings import HTTPAUTH
 
 
 class Rooms (APIView):
@@ -120,9 +124,10 @@ class Questions (APIView):
         request.session.save()
         json = JSONParser().parse(request)
         room = get_or_none(Room, number=room_number)
+        session = Session.objects.get(session_key=request.session.session_key)
 
         if room:
-            question = Question(room=room, title=json['title'], balance=0)
+            question = Question(room=room, title=json['title'], owner=session, balance=0)
             question.save()
 
             Group('room-%s' % question.room.number).send({
@@ -234,6 +239,7 @@ class Polls (APIView):
 
 class StatsOnPoll(APIView):
     def get(self,request, room_number, poll_id):
+        request.session.save()
         room = get_or_none(Room, number=room_number)
         poll = get_or_none(Poll, pk=poll_id)
 
@@ -245,3 +251,40 @@ class StatsOnPoll(APIView):
         else:
             return Response({'error': 'no room or poll found'}, status=403)
 
+
+class Username(APIView):
+    def get(self, request):
+        request.session.save()
+        session = Session.objects.get(session_key=request.session.session_key)
+        user = get_or_none(User, session=session)
+
+        requests.post('http://localhost:8888/users/' + session.session_key, auth=HTTPAUTH)
+
+        if user:
+            return Response({'username': user.username}, status=200)
+        else:
+            return Response({}, status=404)
+
+    def post(self, request):
+        request.session.save()
+        session = Session.objects.get(session_key=request.session.session_key)
+        json = JSONParser().parse(request)
+
+        user = get_or_none(User, session=session)
+
+        if user:
+            user.username = json['username']
+            user.save()
+        else:
+            user = User(session=session, username=json['username'])
+            user.save()
+
+        return Response({}, status=200)
+
+
+class Level(APIView):
+    def get(self, request):
+        request.session.save()
+        session = Session.objects.get(session_key=request.session.session_key)
+
+        return Response({'level': 'niveau 0'}, status=200)
