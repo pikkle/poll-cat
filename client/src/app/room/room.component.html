@@ -50,8 +50,8 @@
         </div>
 
         <div *ngIf="!isAdmin" class="badges-bar">
-            <div *ngFor="let badge of badges">
-                <img src="/assets/{{badge.image}}"> <br />
+            <div *ngFor="let badge of badges" class="badge">
+                <img src="/assets/{{badge.image}}" style="margin-bottom: 5px"> <br />
                 {{badge.name}}
             </div>
         </div>

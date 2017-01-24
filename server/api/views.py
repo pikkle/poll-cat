@@ -67,6 +67,10 @@ class AnswersToPoll(APIView):
                             db_answer.votes += 1
                             db_answer.save()
 
+                http_session = FuturesSession()
+                data = {'userId': session.session_key, 'type': 'pollAnswer', 'payload': "{}"}
+                future = http_session.post('http://localhost:8888/events', auth=HTTPAUTH, json=data)
+
                 Group('room-%s' % poll.room.number).send({
                     'text': dumps({
                         'type': 'poll',
@@ -149,10 +153,16 @@ class Comments(APIView):
         request.session.save()
         json = JSONParser().parse(request)
         question = get_or_none(Question, pk=question_id)
+        session = Session.objects.get(session_key=request.session.session_key)
+
 
         if question and question.room.number == room_number:
             comment = Comment(question=question, message=json['message'])
             comment.save()
+
+            http_session = FuturesSession()
+            data = {'userId': session.session_key, 'type': 'comment.send', 'payload': "{}"}
+            future = http_session.post('http://localhost:8888/events', auth=HTTPAUTH, json=data)
 
             Group('room-%s' % question.room.number).send({
                 'text': dumps({
@@ -187,13 +197,20 @@ class Votes(APIView):
                 if value > 0:
                     question.balance += 1
 
-                    data = {'userId': session.session_key, 'type': 'thumbUp.receive', 'payload': "{}"}
-                    http_session.post('http://localhost:8888/events', auth=HTTPAUTH, json=data)
+                    data = {'userId': question.owner.session_key, 'type': 'thumbUp.receive', 'payload': "{}"}
+                    future = http_session.post('http://localhost:8888/events', auth=HTTPAUTH, json=data)
+
+                    data = {'userId': session.session_key, 'type': 'thumbUp.send', 'payload': "{}"}
+                    future = http_session.post('http://localhost:8888/events', auth=HTTPAUTH, json=data)
+
 
                 elif value < 0:
 
-                    data = {'userId': session.session_key, 'type': 'thumbDown.receive', 'payload': "{}"}
+                    data = {'userId': question.owner.session_key, 'type': 'thumbDown.receive', 'payload': "{}"}
                     http_session.post('http://localhost:8888/events', auth=HTTPAUTH, json=data)
+
+                    data = {'userId': session.session_key, 'type': 'thumbDown.send', 'payload': "{}"}
+                    future = http_session.post('http://localhost:8888/events', auth=HTTPAUTH, json=data)
 
                     question.balance -= 1
 

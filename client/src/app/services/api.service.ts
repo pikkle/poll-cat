@@ -153,6 +153,13 @@ export class ApiService {
 
 	}
 
+	private badgeNames = {
+		"thumbsUpSend": "Liker",
+		'thumbsUpReceive': 'Thumbs up giver',
+		'thumbsDownSend': 'Disliker',
+		'answerPoll': 'Involved',
+		'10comments': 'Big mouth'
+	}
 
 	getBadges() {
 		const path = this.apiUrl + '/me/badges' ;
@@ -161,7 +168,7 @@ export class ApiService {
 			let json = res.json();
 			let badges: Badge[] = [];
 			for (let item of json.badges){
-				badges.push(new Badge(item.name, item.image));
+				badges.push(new Badge(this.badgeNames[item.name] || item.name, item.image));
 			}
 			return {badges: badges, level: json.level};
 		});

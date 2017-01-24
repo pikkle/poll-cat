@@ -6,6 +6,12 @@
 
 }
 
+.badge {
+    text-align: center;
+    background-color: transparent;!important;
+    color: #000;!important;
+}
+
 .room-effective-container {
     width: 100%;
     display: flex;
