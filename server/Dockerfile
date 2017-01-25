@@ -17,7 +17,6 @@ RUN pip install\
 
 COPY . /root/server
 
-EXPOSE 80:80
 EXPOSE 8000:8000
 
-ENTRYPOINT ["/usr/bin/python" ,"/root/server/manage.py", "runserver"]
+ENTRYPOINT ["/usr/bin/python" ,"/root/server/manage.py", "runserver", "0.0.0.0:8000"]

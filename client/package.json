@@ -5,6 +5,7 @@
   "angular-cli": {},
   "scripts": {
     "build": "webpack --progress",
+    "prod": "webpack --progres -p",
     "serve": "webpack-dev-server --inline --progress --host 0.0.0.0"
   },
   "private": true,

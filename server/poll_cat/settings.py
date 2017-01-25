@@ -25,7 +25,7 @@ SECRET_KEY = 'dga$48qs2gs*5xiijcu9*qgltk&tu23)c7^sh2qh4f+jum^yb+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['api']
 
 APPEND_SLASH = False
 

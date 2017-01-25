@@ -9,7 +9,7 @@ import {Poll} from "../models/poll";
 
 @Injectable()
 export class ApiService {
-	private apiUrl = 'http://' + environment.apiAddress;
+	private apiUrl = 'api';
 	private jsonHeader = new Headers({'Content-Type': 'application/json'});
 
 	private _roomCreation: Subject<Room> = new Subject<Room>();

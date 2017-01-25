@@ -3,10 +3,13 @@ services:
   api:
     build: server/
     ports:
-      - "8000"
+      - "8000:8000"
+
   web:
     build: client/
     ports:
-      - "80:80"
+      - "8080:80"
     links:
       - api
+    environment:
+      - WS_SERVER = localhost

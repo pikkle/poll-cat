@@ -9,6 +9,6 @@ COPY pollCat.conf /etc/nginx/conf.d/
 
 RUN rm -R /etc/nginx/sites-enabled
 
-EXPOSE 80:80
+EXPOSE 8080:80
 
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
