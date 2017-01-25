@@ -44,7 +44,7 @@ export class RoomComponent implements OnInit, OnDestroy {
 
 	ngOnInit() {
 		this.subs.push(this.route.params.subscribe(params => {
-			var roomNumber = params['roomNumber'];
+			let roomNumber = params['roomNumber'];
 			this.pollcatService.updateTitle("");
 
 			this.subs.push(this.socketService.questionReceive.subscribe(q => {
@@ -66,7 +66,7 @@ export class RoomComponent implements OnInit, OnDestroy {
 				if (p.isExclusive) {
 					this.pollAnswersRadio[p.id] = {value: ''}
 				} else {
-					var answers = {};
+					let answers = {};
 					for (let a of p.answers) {
 						answers[a.id] = {value: false};
 					}
@@ -104,6 +104,7 @@ export class RoomComponent implements OnInit, OnDestroy {
 			}, error => {
 				this.roomError = true;
 			}));
+
 			this.socketService.joinRoom(roomNumber);
 		}));
 
