@@ -30,8 +30,9 @@ You will need the following programs to run the server:
 ## Instructions
 **For local deployment only**
 - Clone the repo
+- Ensure that the ports *8080* and *8000* are free
 - Run the following command: `docker-compose up`
-- The app is now running on [http://localhost:8000](http://localhost:8000)
+- The app is now running on [http://localhost:8080](http://localhost:8080)
 
 ## Screenshots
 
