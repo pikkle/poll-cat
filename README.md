@@ -28,6 +28,7 @@ You will need the following programs to run the server:
 - Docker-compose **1.10**
 
 ## Instructions
+** For local deployment only **
 - Clone the repo
 - Run the following command: `docker-compose up`
 - The app is now running on [http://localhost:8080](http://localhost:8080)
